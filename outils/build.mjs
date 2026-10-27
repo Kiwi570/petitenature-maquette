@@ -18,6 +18,8 @@ const GROK = new Set(fs.existsSync(GROK_DIR) ? fs.readdirSync(GROK_DIR).map((f) 
 const GROK_TAILLES = {};
 if (fs.existsSync(GROK_DIR)) fs.readdirSync(GROK_DIR).forEach((f) => { const m = f.match(/^(.*)-(\d+)\.webp$/); if (m) (GROK_TAILLES[m[1]] = GROK_TAILLES[m[1]] || []).push(+m[2]); });
 const AUJOURDHUI = new Date('2026-10-27T12:00:00+01:00');
+const URL_SITE = 'https://petitenature-maquette.vercel.app';
+const adresse = (f) => URL_SITE + '/' + f.replace(/(^|\/)index\.html$/, '').replace(/\.html$/, '');
 
 let R = '';
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -112,8 +114,14 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <meta property="og:title" content="${esc(titre)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
+<meta property="og:url" content="${adresse(fichier)}">
+<meta property="og:site_name" content="Compagnie Petite Nature">
 <meta property="og:locale" content="fr_FR">
-<meta property="og:image" content="${R}assets/img/partage.jpg">
+<meta property="og:image" content="${URL_SITE}/assets/img/partage.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Un pupitre dans un pré au crépuscule, une petite lumière rouge à ses pieds">
+<meta name="twitter:image" content="${URL_SITE}/assets/img/partage.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ede6d6">
 <meta name="robots" content="noindex, nofollow">
@@ -173,7 +181,7 @@ ${scripts}
 
 function jsonld(fichier) {
   const c = PN.compagnie;
-  const org = { '@type': 'PerformingGroup', name: c.nom, foundingDate: '2007', email: c.email, telephone: c.telephones.map((t) => '+33 ' + t.slice(1)),
+  const org = { '@type': 'PerformingGroup', name: c.nom, url: URL_SITE + '/', logo: URL_SITE + '/assets/img/identite/logo-960.webp', foundingDate: '2007', email: c.email, telephone: c.telephones.map((t) => '+33 ' + t.slice(1)),
     address: { '@type': 'PostalAddress', postalCode: '28220', addressLocality: 'Cloyes-les-Trois-Rivières', addressCountry: 'FR' },
     sameAs: [c.instagram, c.facebook], description: 'Lectures à voix haute et labos littéraires.' };
   const graphe = [org];
