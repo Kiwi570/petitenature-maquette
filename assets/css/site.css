@@ -223,12 +223,13 @@ html.calme.curseur-actif, html.calme.curseur-actif a, html.calme.curseur-actif b
 
 /* ---------- Transition : la page qui se tourne ---------- */
 .feuillet { position: fixed; inset: 0; z-index: 80; pointer-events: none; perspective: 1600px; visibility: hidden; }
-.feuillet__page { position: absolute; inset: -2% -2% -2% 0; background: var(--papier-clair); transform-origin: 0% 50%; box-shadow: -30px 0 60px rgba(42, 36, 32, 0.25); display: grid; place-items: center; }
+.feuillet__page { position: absolute; inset: -2% -2% -2% 0; background: var(--papier-clair) url("../img/texture-papier.webp") center / cover; transform-origin: 0% 50%; box-shadow: -30px 0 60px rgba(42, 36, 32, 0.25); display: grid; place-items: center; }
 .feuillet__page::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.08), transparent 18%, transparent 82%, rgba(0,0,0,.12)); }
 .feuillet .neon { font-size: clamp(2.5rem, 8vw, 6rem); }
 
 /* ---------- Images ---------- */
 .visuel { position: relative; margin: 0; overflow: hidden; background: var(--papier-ombre); }
+.visuel picture { display: block; width: 100%; height: 100%; }
 .visuel img, .visuel canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
 .visuel--cadre { box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -22px rgba(42, 36, 32, 0.45); }
 .visuel--contenu img { object-fit: contain; background: var(--papier-clair); }
@@ -287,7 +288,7 @@ html.calme .dit .mot, html.sans-js .dit .mot { color: inherit; text-shadow: none
 }
 
 /* ---------- Prochaine date ---------- */
-.billet { display: grid; gap: 1.5rem; background: var(--papier-clair); border: 1px solid var(--papier-ombre); padding: clamp(1.25rem, 3vw, 2.5rem); position: relative; }
+.billet { display: grid; gap: 1.5rem; background: var(--papier-clair) url("../img/texture-papier.webp") center / cover; border: 1px solid var(--papier-ombre); padding: clamp(1.25rem, 3vw, 2.5rem); position: relative; }
 .billet::before, .billet::after { content: ""; position: absolute; width: 26px; height: 26px; border-radius: 50%; background: var(--papier); border: 1px solid var(--papier-ombre); top: 50%; transform: translateY(-50%); }
 .billet::before { left: -14px; clip-path: inset(0 0 0 50%); }
 .billet::after { right: -14px; clip-path: inset(0 50% 0 0); }
@@ -299,6 +300,10 @@ html.calme .dit .mot, html.sans-js .dit .mot { color: inherit; text-shadow: none
 .decompte b { font-weight: 400; font-size: var(--t-4); line-height: 1; color: var(--neon); text-shadow: 0 0 10px var(--neon-halo); }
 .decompte span { font-size: var(--t-0); color: var(--encre-douce); }
 .billet .visuel { max-width: 220px; }
+
+.prochaine-bande { height: clamp(240px, 32vw, 460px); }
+.prochaine-billet { position: relative; margin-top: calc(-1 * clamp(3.5rem, 7vw, 6.5rem)); padding-inline: clamp(0px, 4vw, 4rem); }
+.bande-givre { height: clamp(200px, 26vw, 360px); }
 
 /* ---------- Corde à linge (galeries) ---------- */
 .corde { position: relative; padding-top: 2.5rem; overflow: hidden; }
@@ -537,7 +542,7 @@ html.calme .traces .pas-homme, html.calme .traces .pas-chien, html.sans-js .trac
 .vide { padding: 1.5rem; border: 1px dashed var(--papier-ombre); }
 
 /* ---------- Formulaire en étapes ---------- */
-.formulaire { background: var(--papier-clair); border: 1px solid var(--papier-ombre); padding: clamp(1.25rem, 3vw, 2.5rem); }
+.formulaire { background: var(--papier-clair) url("../img/texture-papier.webp") center / cover; border: 1px solid var(--papier-ombre); padding: clamp(1.25rem, 3vw, 2.5rem); }
 .etapes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin: 0 0 2rem; padding: 0; list-style: none; counter-reset: e; }
 .etapes li { counter-increment: e; font-size: var(--t-0); display: grid; gap: 0.4rem; color: var(--encre-douce); }
 .etapes li::before { content: counter(e); font-family: var(--f-tapuscrit); width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid currentColor; }

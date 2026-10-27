@@ -40,9 +40,11 @@ function visuel(scene, grok, o = {}) {
   const cls = ['visuel', o.cls, o.parallaxe && 'parallaxe'].filter(Boolean).join(' ');
   if (grok && GROK.has(grok)) {
     const tailles = GROK_TAILLES[grok].sort((a, b) => a - b);
+    if (!o.mobile && GROK.has(grok + '-mobile')) o.mobile = grok + '-mobile';
+    if (o.alt) { o.alt = o.alt.replace(/^Visuel provisoire : /, ''); o.alt = o.alt.charAt(0).toUpperCase() + o.alt.slice(1); }
     const srcset = tailles.map((w) => `${R}assets/img/grok/${grok}-${w}.webp ${w}w`).join(', ');
     const mob = o.mobile && GROK.has(o.mobile) ? `<source media="(max-width: 700px)" srcset="${GROK_TAILLES[o.mobile].map((w) => `${R}assets/img/grok/${o.mobile}-${w}.webp ${w}w`).join(', ')}">` : '';
-    return `<figure class="${cls}${o.insole ? ' insole' : ''}"${o.style ? ` style="${o.style}"` : ''}><picture>${mob}<img src="${R}assets/img/grok/${grok}-${tailles[tailles.length - 1]}.webp" srcset="${srcset}" sizes="${o.sizes || '100vw'}" alt="${esc(o.alt || '')}" loading="${o.eager ? 'eager' : 'lazy'}" decoding="async"></picture></figure>`;
+    return `<figure class="${cls}${o.insole === false ? '' : ' insole'}"${o.style ? ` style="${o.style}"` : ''}><picture>${mob}<img src="${R}assets/img/grok/${grok}-${tailles[tailles.length - 1]}.webp" srcset="${srcset}" sizes="${o.sizes || '100vw'}" alt="${esc(o.alt || '')}" loading="${o.eager ? 'eager' : 'lazy'}" decoding="async"></picture></figure>`;
   }
   return `<figure class="${cls}"${o.style ? ` style="${o.style}"` : ''}><canvas data-scene="${scene}" role="img" aria-label="${esc(o.alt || 'Visuel provisoire')}"></canvas><span class="provisoire">Visuel provisoire</span></figure>`;
 }
@@ -104,6 +106,8 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
+<meta property="og:image" content="${R}assets/img/partage.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ede6d6">
 <link rel="icon" type="image/webp" href="${R}assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="${R}assets/fonts/literata-var.woff" as="font" type="font/woff" crossorigin>
@@ -270,7 +274,7 @@ function carteFrance({ id = 'carte', titreListe = true } = {}) {
 </div>`;
 }
 
-function appelProgrammer(titre = 'Programmer une lecture') {
+function appelProgrammer(titre = 'Programmer une lecture', grok = 'accueil-hero') {
   return `<section class="section nuit" data-fil="c" data-fil-y="0.2">
   <div class="wrap appel">
     <div style="display:grid;gap:1.4rem">
@@ -279,7 +283,7 @@ function appelProgrammer(titre = 'Programmer une lecture') {
       <p class="lecture">Médiathèque, établissement scolaire, musée, festival, lieu de soin ou entreprise : décrivez votre projet en quatre étapes pour préparer une proposition avec la compagnie.</p>
       <div class="actions"><a class="btn btn--neon" href="${R}programmer.html">Commencer la demande</a><span class="copie meta"><code>${PN.compagnie.email}</code><button type="button" data-copier="${PN.compagnie.email}">Copier</button></span></div>
     </div>
-    ${image('lectures/paysans-paysages-plein-air', { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw', alt: 'Public assis dans un pré pour une lecture en plein air' })}
+    ${GROK.has(grok) ? visuel('', grok, { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw', alt: { 'accueil-hero': 'Un pupitre dans un pré au crépuscule, une petite lumière rouge à ses pieds', 'accueil-programmer': 'Un rouge-gorge posé sur une pile de livres, sur un banc givré', 'lectures-hero': 'Un pupitre et un livre ouvert dans une clairière, au lever du jour' }[grok] || '' }) : image('lectures/paysans-paysages-plein-air', { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
   </div>
 </section>`;
 }
@@ -289,7 +293,7 @@ function accueil() {
   const portes = [
     { neon: 'Lectures', h: 'lectures.html', lien: 'Parcourir les 13 lectures', txt: 'Des lectures prêtes à être programmées, en tournée, en immersion ou sur mesure. Au supermarché, on lit Annie Ernaux au rayon lessive.', vis: () => image('lectures/au-supermarche', { cls: 'porte__visuel parallaxe', sizes: '(min-width: 960px) 45vw, 100vw' }), dida: '(Rayon lessives. Un public assis entre les rayons.)' },
     { neon: 'Labos', h: 'labos.html', lien: 'Découvrir les labos', txt: 'Des projets où la littérature devient une expérience collective, menés dans des établissements scolaires, des hôpitaux, des EHPAD, des foyers de vie, des prisons ou des lieux de patrimoine.', vis: () => image('labos/poesies-amoureuses-repetitions', { cls: 'porte__visuel parallaxe', sizes: '(min-width: 960px) 45vw, 100vw' }), dida: '(Répétition au lycée Bréquigny, avec des musiciens de l’Orchestre National de Bretagne.)' },
-    { neon: 'Créations', h: 'creations-sceniques.html', lien: 'Voir Faire un feu', txt: 'Faire un feu, d’après la nouvelle de Jack London : théâtre d’ombre, arts plastiques, création visuelle et sonore en direct.', vis: () => visuel('feu-neige', 'accueil-porte-creations', { cls: 'porte__visuel', alt: 'Visuel provisoire : un feu dans la neige, la nuit' }), dida: '(Le Grand Nord. Un homme, un chien, un feu à allumer.)' }
+    { neon: 'Créations', h: 'creations-sceniques.html', lien: 'Voir Faire un feu', txt: 'Faire un feu, d’après la nouvelle de Jack London : théâtre d’ombre, arts plastiques, création visuelle et sonore en direct.', vis: () => visuel('feu-neige', 'accueil-porte-creations', { cls: 'porte__visuel', alt: 'Un feu de camp dans la neige, la nuit, au milieu des épicéas' }), dida: '(Le Grand Nord. Un homme, un chien, un feu à allumer.)' }
   ];
   const corde = [
     ['labos/poesies-amoureuses-restitution-orchestre', 'Poésies amoureuses', 'Lycée Bréquigny, Rennes', 'dire-ensemble.html#poesies-amoureuses'],
@@ -363,7 +367,8 @@ function accueil() {
 <section class="section" data-fil="d" data-fil-y="0.4">
   <div class="wrap" style="display:grid;gap:2rem">
     <div class="tapuscrit"><p class="marge dida">(Une date, un lieu, une heure. Le reste est dans l’agenda.)</p><h2 class="corps titre titre--moyen" data-perche="d">La prochaine lecture</h2></div>
-    ${blocProchaine('h3')}
+    ${GROK.has('accueil-prochaine-date') ? `<div class="prochaine-bande">${visuel('', 'accueil-prochaine-date', { cls: 'parallaxe', style: 'height:100%', alt: 'Une bibliothèque vide, des chaises en cercle autour d’une lampe' })}</div>` : ''}
+    <div class="prochaine-billet">${blocProchaine('h3')}</div>
   </div>
 </section>
 
@@ -414,7 +419,7 @@ function accueil() {
   </div>
 </section>
 
-${appelProgrammer()}
+${appelProgrammer('Programmer une lecture', 'accueil-programmer')}
 `
   });
 }
@@ -423,11 +428,11 @@ ${appelProgrammer()}
 function compagnie() {
   const gestes = [
     ['Choisir et assembler les textes', () => image('labos/parole-dhomme-livres', { cls: '', sizes: '360px' }), '(Des livres, une carte, des pages à relier.)'],
-    ['Construire une dramaturgie', () => visuel('scene', 'compagnie-hero', { alt: 'Visuel provisoire : une scène vide, une chaise et un pupitre' }), '(Un début, un milieu, une fin, pour des textes qui n’étaient pas faits pour se suivre.)'],
-    ['Travailler le rythme', () => visuel('metronome', 'compagnie-geste-rythme', { alt: 'Visuel provisoire : un métronome' }), '(Les silences comptent autant que les mots.)'],
-    ['La voix', () => image('lectures/au-bord-de-leau-barque', { sizes: '360px' }), '(Une voix, à ciel ouvert.)'],
+    ['Construire une dramaturgie', () => visuel('scene', 'compagnie-geste-assembler', { alt: 'Des mains assemblent des bandes de papier sur une table de bois' }), '(Un début, un milieu, une fin, pour des textes qui n’étaient pas faits pour se suivre.)'],
+    ['Travailler le rythme', () => visuel('metronome', 'compagnie-geste-rythme', { alt: 'Un métronome à côté d’un carnet ouvert, sous une lampe' }), '(Les silences comptent autant que les mots.)'],
+    ['La voix', () => visuel('', 'compagnie-geste-voix', { alt: 'La grille d’un micro ancien, un reflet rouge sur le bord' }), '(Une voix, et ce qui la porte.)'],
     ['L’adresse', () => image('lectures/au-musee', { sizes: '360px' }), '(À qui parle-t-on ? À une œuvre, à une salle, à une personne.)'],
-    ['Les conditions d’écoute', () => image('lectures/au-supermarche', { sizes: '360px' }), '(Assis entre les rayons, on écoute autrement.)']
+    ['Les conditions d’écoute', () => visuel('', 'compagnie-geste-ecoute', { alt: 'Des auditeurs de dos, assis sur des coussins dans une bibliothèque' }), '(Assis sur des coussins, à la lumière d’une lampe.)']
   ];
   return page({
     fichier: 'compagnie.html', actif: 'compagnie',
@@ -439,13 +444,13 @@ function compagnie() {
     <p class="marge dida">(Une scène vide. Une chaise, un pupitre, une lampe.)</p>
     <div class="large">${neon('La compagnie', { tag: 'h1', cls: 'neon--moyen', perche: 'd' })}</div>
   </div>
-  <div class="ouverture__image">${visuel('scene', 'compagnie-hero', { cls: 'parallaxe', style: 'height:100%', mobile: 'compagnie-hero-mobile', alt: 'Visuel provisoire : une scène vide éclairée par un faisceau' })}</div>
+  <div class="ouverture__image">${visuel('scene', 'compagnie-hero', { cls: 'parallaxe', style: 'height:100%', mobile: 'compagnie-hero-mobile', alt: 'Une scène vide éclairée par un faisceau, une chaise, un pupitre et une lampe' })}</div>
 </section>
 
 <section class="section" data-fil="d" data-fil-y="0.2">
   <div class="wrap tapuscrit">
     <div class="marge" style="display:grid;gap:1rem;align-content:start">
-      ${visuel('lampe', '', { cls: 'ratio-45', alt: 'Visuel provisoire : des feuillets sous une lampe' })}
+      ${visuel('lampe', 'lectures-fiche-fond', { cls: 'ratio-45', alt: 'En attendant le portrait : une pile de livres et des feuillets près d’une fenêtre' })}
       <p class="dida dida--petite">(Portrait d’Élise Truchard ${ac('à fournir')})</p>
     </div>
     <div class="corps">
@@ -485,7 +490,7 @@ function compagnie() {
 
 <section class="section section--serree" data-fil="g" data-fil-y="0.3">
   <div class="wrap cote-a-cote">
-    ${image('lectures/paysans-paysages-plein-air', { cls: 'ratio-43 insole', sizes: '(min-width: 900px) 50vw, 100vw' })}
+    ${GROK.has('accueil-manifeste-feuillets') ? visuel('', 'accueil-manifeste-feuillets', { cls: 'ratio-43', sizes: '(min-width: 900px) 50vw, 100vw', alt: 'Deux mains tiennent des feuillets avant une lecture, des auditeurs flous au fond' }) : image('lectures/paysans-paysages-plein-air', { cls: 'ratio-43 insole', sizes: '(min-width: 900px) 50vw, 100vw' })}
     <div class="corps">
       <h2 class="titre titre--moyen" data-perche="g">Deux pôles de travail</h2>
       <p class="lecture">Des <a href="${R}lectures.html">lectures à voix haute</a>, en tournée, en immersion ou sur mesure, et des <a href="${R}labos.html">labos littéraires</a>, où la littérature devient une expérience collective avec les participants.</p>
@@ -548,12 +553,12 @@ function lectures() {
   <div class="wrap">
     <div class="tapuscrit"><p class="marge dida">(Trois manières de faire.)</p><h2 class="corps titre titre--moyen" data-perche="g">En tournée, en immersion, sur mesure</h2></div>
     <div class="projets" style="margin-top:2.5rem">
-      ${[['en-tournee', 'neon--soleil', 'lectures/paysans-paysages-plein-air'], ['en-immersion', 'neon--bleu', 'lectures/observer-le-vivant-cyanotype'], ['sur-mesure', '', 'lectures/dans-une-gare']].map(([k, c, im]) => `<div class="projet-carte">${image(im, { sizes: '(min-width: 960px) 30vw, 100vw' })}${neon(PN.categories[k].nom, { tag: 'h3', cls: 'neon--petit neon--nuit ' + c })}<p style="color:#d6cabb">${PN.categories[k].texte}</p><a class="lien-fleche" href="#${k}" data-filtre-lien="${k}" style="justify-self:start">Voir ces lectures</a></div>`).join('')}
+      ${[['en-tournee', 'neon--soleil', 'lectures/paysans-paysages-plein-air', 'lectures-chapitre-tournee', 'Un sac de livres sur une banquette de train, des champs et des peupliers derrière la vitre'], ['en-immersion', 'neon--bleu', 'lectures/observer-le-vivant-cyanotype', 'lectures-chapitre-immersion', 'Des cyanotypes de fougères qui sèchent sur un fil, au bord d’une rivière'], ['sur-mesure', '', 'lectures/dans-une-gare', 'lectures-chapitre-sur-mesure', 'Un pupitre et un livre ouvert au bout d’un rayon de supermarché vide']].map(([k, c, im, gk, alt]) => `<div class="projet-carte">${GROK.has(gk) ? visuel('', gk, { cls: 'ratio-43', sizes: '(min-width: 960px) 30vw, 100vw', alt }) : image(im, { sizes: '(min-width: 960px) 30vw, 100vw' })}${neon(PN.categories[k].nom, { tag: 'h3', cls: 'neon--petit neon--nuit ' + c })}<p style="color:#d6cabb">${PN.categories[k].texte}</p><a class="lien-fleche" href="#${k}" data-filtre-lien="${k}" style="justify-self:start">Voir ces lectures</a></div>`).join('')}
     </div>
   </div>
 </section>
 
-${appelProgrammer('Programmer une lecture')}
+${appelProgrammer('Programmer une lecture', 'lectures-hero')}
 `
   });
 }
@@ -628,7 +633,7 @@ const LABOS = {
     img: 'labos/poesies-amoureuses-repetitions',
     projets: [
       { id: 'poesies-amoureuses', titre: 'Poésies amoureuses', ou: 'Lycée Bréquigny, Rennes', resti: 'Restitution publique', img: 'labos/poesies-amoureuses-restitution-orchestre' },
-      { id: 'faire-un-feu', titre: 'Faire un feu, au chœur des mots', ou: '9 classes de collège, Dun-sur-Auron', resti: 'Spectacle déambulatoire en plein air', scene: 'foret-neige' },
+      { id: 'faire-un-feu', titre: 'Faire un feu, au chœur des mots', ou: '9 classes de collège, Dun-sur-Auron', resti: 'Spectacle déambulatoire en plein air', scene: 'foret-neige', grok: 'creations-hero' },
       { id: 'parole-dhomme', titre: 'Parole d’homme', ou: 'Centre de détention de Châteaudun', resti: 'Restitution et capsule sonore', img: 'labos/parole-dhomme-livres' }
     ]
   },
@@ -682,6 +687,7 @@ function labos() {
   <div class="wrap tapuscrit">
     <p class="marge dida">(Là où la littérature ne va pas toujours.)</p>
     <div class="corps">
+      ${GROK.has('labos-hero') ? visuel('', 'labos-hero', { cls: 'ratio-169', sizes: '(min-width: 960px) 60vw, 100vw', alt: 'Une grande table d’atelier vue de dessus : des mains, des feuilles, des végétaux et des cyanotypes' }) : ''}
       <p class="lecture">Menées dans des établissements scolaires, des hôpitaux, des EHPAD, des foyers de vie, des prisons ou des lieux de patrimoine, ces propositions donnent lieu à des créations réalisées avec les participants.</p>
       <div class="lieux-ruban"><span>établissements scolaires</span><span>hôpitaux</span><span>EHPAD</span><span>foyers de vie</span><span>prisons</span><span>lieux de patrimoine</span></div>
     </div>
@@ -696,7 +702,7 @@ ${Object.values(LABOS).map((L, k) => `
       ${image(L.img, { cls: 'ratio-43 insole parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
     </div>
     <div class="projets">
-      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, '', { alt: 'Visuel animé du projet' })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
+      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
     </div>
     <p><a class="lien-fleche" href="${R}${L.fichier}">Tous les projets « ${L.titre} »</a></p>
   </div>
@@ -855,6 +861,7 @@ function pageLabo(cle) {
       <div class="large">${neon(L.mot, { tag: 'h1', perche: 'd' })}<p class="titre titre--petit" style="margin-top:0.5rem">ensemble</p></div>
     </div>
   </div>
+  ${GROK.has(L.grok) ? `<div class="ouverture__image">${visuel('', L.grok, { style: 'height:100%', cls: 'parallaxe', alt: { 'labos-dire': 'Un groupe lit à voix haute en cercle, à contre-jour dans une grande salle claire', 'labos-ecrire': 'Une main tient un crayon au-dessus d’un carnet, entouré de plantes séchées', 'labos-imaginer': 'Un casque et un enregistreur posés sur de la mousse et des plantes sèches' }[L.grok] })}</div>` : ''}
 </section>
 ${sections[cle]()}
 <section class="section nuit" data-fil="g" data-fil-y="0.2">
@@ -889,7 +896,7 @@ function creations() {
     <p class="marge dida">(Le Grand Nord. Soixante-quinze degrés sous zéro. Un homme, un chien.)</p>
     <div class="large" style="display:grid;gap:1rem">${neon('Faire un feu', { tag: 'h1', cls: 'neon--nuit', perche: 'd' })}<p class="chapeau">Adaptation et mise en scène d’Élise Truchard, d’après la nouvelle de Jack London.</p></div>
   </div>
-  <div class="ouverture__image">${visuel('foret-neige', 'creations-hero', { style: 'height:100%', cls: 'parallaxe', mobile: 'creations-hero-mobile', alt: 'Visuel provisoire : une piste dans une forêt enneigée, un homme et un chien au loin' })}</div>
+  <div class="ouverture__image">${visuel('foret-neige', 'creations-hero', { style: 'height:100%', cls: 'parallaxe', mobile: 'creations-hero-mobile', alt: 'Une piste dans une forêt enneigée, un homme et un chien au loin' })}</div>
 </section>
 
 <section class="section" style="position:relative;z-index:2" data-fil="d" data-fil-y="0.2">
@@ -905,9 +912,10 @@ function creations() {
   </div>
 </section>
 
+${GROK.has('creations-givre') ? `<div class="bande-givre" style="position:relative;z-index:2">${visuel('', 'creations-givre', { style: 'height:100%', cls: 'parallaxe', alt: 'Du givre en fougères sur une vitre sombre' })}</div>` : ''}
 <section class="section" style="position:relative;z-index:2" data-fil="g" data-fil-y="0.2">
   <div class="wrap cote-a-cote">
-    ${visuel('feu-neige', 'creations-allumette', { cls: 'ratio-45', alt: 'Visuel provisoire : un feu dans la neige' })}
+    ${visuel('feu-neige', 'creations-allumette', { cls: 'ratio-45', alt: 'Une allumette enflammée dans le noir, des cristaux de glace autour' })}
     <div class="corps">
       <h2 class="titre titre--moyen" data-perche="g">Le spectacle en pratique</h2>
       <dl class="infos" style="border-top-color:#efe7da">
@@ -940,7 +948,7 @@ function agenda() {
     <p class="marge dida">(Une route à l’aube. Des collèges, des médiathèques, des abbayes.)</p>
     <div class="large" style="display:grid;gap:1rem">${neon('Agenda', { tag: 'h1', perche: 'd' })}<p class="chapeau">Les lectures, labos et restitutions de la compagnie. Les dates passées restent visibles, classées par année.</p></div>
   </div>
-  <div class="ouverture__image">${visuel('route', 'agenda-hero', { style: 'height:100%', cls: 'parallaxe', mobile: 'agenda-hero-mobile', alt: 'Visuel provisoire : une route de campagne bordée de peupliers à l’aube' })}</div>
+  <div class="ouverture__image">${visuel('route', 'agenda-hero', { style: 'height:100%', cls: 'parallaxe', mobile: 'agenda-hero-mobile', alt: 'Une route de campagne bordée de peupliers, dans la brume de l’aube' })}</div>
 </section>
 
 <section class="section" data-fil="d" data-fil-y="0.1">
@@ -996,7 +1004,7 @@ function programmer() {
     <p class="marge dida">(Une salle prête. Des chaises en rang, un pupitre, une lampe.)</p>
     <div class="large" style="display:grid;gap:1rem">${neon('Programmer', { tag: 'h1', cls: 'neon--moyen', perche: 'd' })}<p class="chapeau">Une lecture, un labo ou un spectacle : décrivez votre projet en quatre étapes. La compagnie s’en sert pour préparer une proposition adaptée à votre lieu et à votre public.</p></div>
   </div>
-  <div class="ouverture__image" style="height:clamp(220px,34vw,420px)">${visuel('salle', 'programmer-hero', { style: 'height:100%', mobile: 'programmer-hero-mobile', alt: 'Visuel provisoire : une salle de bibliothèque préparée pour une lecture' })}</div>
+  <div class="ouverture__image" style="height:clamp(220px,34vw,420px)">${visuel('salle', 'programmer-hero', { style: 'height:100%', mobile: 'programmer-hero-mobile', alt: 'Une salle de bibliothèque prête pour une lecture : des chaises en rang, un pupitre' })}</div>
 </section>
 
 <section class="section" data-fil="d" data-fil-y="0.05">
@@ -1013,6 +1021,7 @@ function programmer() {
         <p>Fiches techniques des lectures ${ac()}</p>
         <p>Conditions et tarifs ${ac()}</p>
       </div>
+      ${GROK.has('programmer-etapes') ? visuel('', 'programmer-etapes', { cls: 'ratio-23', sizes: '(min-width: 960px) 25vw, 100vw', alt: 'Un pupitre plié, une lampe et un sac de livres près d’une porte ouverte' }) : ''}
       <p class="mise-en-garde">Maquette : le formulaire fonctionne, mais rien n’est envoyé.</p>
     </aside>
     <div class="large">
@@ -1074,8 +1083,8 @@ function contact() {
     <div class="large" style="display:grid;gap:1rem">${neon('Contact', { tag: 'h1', perche: 'd' })}<p class="chapeau">Pour programmer une lecture, imaginer un labo ou simplement échanger autour d’un projet littéraire.</p></div>
   </div>
   <div class="ouverture__image" style="position:relative;height:clamp(260px,40vw,480px)">
-    ${visuel('givre', 'contact-hero', { style: 'height:100%', mobile: 'contact-hero-mobile', alt: 'Visuel provisoire : du givre sur une vitre bleue' })}
-    <div style="position:absolute;inset:0;display:grid;place-items:center;pointer-events:none">${image('identite/rouge-gorge', { cls: 'visuel--contenu', style: 'background:transparent;width:min(34vw,260px)', naturel: true, sizes: '260px' })}</div>
+    ${visuel('givre', 'contact-hero', { style: 'height:100%', mobile: 'contact-hero-mobile', alt: 'Un rouge-gorge sur un piquet de clôture givré, au petit matin' })}
+    ${GROK.has('contact-hero') ? '' : `<div style="position:absolute;inset:0;display:grid;place-items:center;pointer-events:none">${image('identite/rouge-gorge', { cls: 'visuel--contenu', style: 'background:transparent;width:min(34vw,260px)', naturel: true, sizes: '260px' })}</div>`}
   </div>
 </section>
 <section class="section" data-fil="d" data-fil-y="0.1">
@@ -1106,7 +1115,7 @@ function contact() {
 /* ================================================================= LÉGAL */
 function legal(fichier, titre, desc, html) {
   return page({ fichier, titre: `${titre}, Petite Nature`, description: desc, corps: () => `
-<section class="ouverture"><div class="wrap tapuscrit"><p class="marge dida">(Les informations obligatoires, en clair.)</p><div class="corps legal"><h1 class="titre titre--moyen" data-perche="d">${titre}</h1>${html}</div></div></section>
+<section class="ouverture"><div class="wrap tapuscrit"><p class="marge dida">(Les informations obligatoires, en clair.)</p><div class="corps legal"><h1 class="titre titre--moyen" data-perche="d">${titre}</h1>${GROK.has('lectures-fiche-fond') ? visuel('', 'lectures-fiche-fond', { cls: 'ratio-169', sizes: '(min-width: 960px) 60vw, 100vw', alt: 'Une pile de livres et des feuillets près d’une fenêtre' }) : ''}${html}</div></div></section>
 <section class="section section--serree"><div class="wrap"><p class="note-maquette">Maquette : les mentions « à compléter » doivent être renseignées par la compagnie avant la mise en ligne.</p></div></section>` });
 }
 
@@ -1146,7 +1155,7 @@ page({ fichier: '404.html', titre: 'Page introuvable, Petite Nature', descriptio
   ${neon('Introuvable', { tag: 'h1', cls: 'neon--moyen', perche: 'd' })}
   <p class="chapeau">Cette page n’existe pas, ou plus. Le rouge-gorge connaît d’autres chemins.</p>
   <div class="actions"><a class="btn" href="${R}index.html">Revenir à l’accueil</a><a class="btn btn--trait" href="${R}lectures.html">Voir les lectures</a><a class="btn btn--trait" href="${R}agenda.html">Voir l’agenda</a></div>
-  ${image('identite/rouge-gorge', { cls: 'visuel--contenu', naturel: true, style: 'background:transparent;width:180px', sizes: '180px' })}
+  ${GROK.has('page-404') ? visuel('', 'page-404', { cls: 'ratio-169', sizes: '(min-width: 960px) 60vw, 100vw', alt: 'Une plume posée sur les pages blanches d’un livre ouvert' }) : image('identite/rouge-gorge', { cls: 'visuel--contenu', naturel: true, style: 'background:transparent;width:180px', sizes: '180px' })}
 </div></section>` });
 
 fs.writeFileSync(path.join(SITE, 'vercel.json'), JSON.stringify({ cleanUrls: true, trailingSlash: false }, null, 2) + '\n');

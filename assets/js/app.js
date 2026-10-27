@@ -691,7 +691,7 @@
     var n = 0;
     var h = decodeURIComponent((location.hash || '').slice(1));
     if (h) { var c = f.querySelector('input[name="envie"][value="' + h.replace(/"/g, '') + '"]'); if (c) c.checked = true; }
-    function voir(i) {
+    function voir(i, sansFocus) {
       n = i;
       etapes.forEach(function (et, k) { et.hidden = k !== i; });
       puces.forEach(function (p, k) { p.classList.toggle('est-active', k === i); p.classList.toggle('est-faite', k < i); });
@@ -703,7 +703,7 @@
       retour.textContent = ''; retour.className = 'retour';
       var cible = i < etapes.length ? etapes[i] : recap;
       if (anime) gsap.fromTo(cible, { autoAlpha: 0, x: 24 }, { autoAlpha: 1, x: 0, duration: 0.45, ease: 'power3.out' });
-      var titre = $('legend, h3', cible); if (titre) { titre.setAttribute('tabindex', '-1'); titre.focus({ preventScroll: true }); }
+      var titre = $('legend, h3', cible); if (titre && !sansFocus) { titre.setAttribute('tabindex', '-1'); titre.focus({ preventScroll: true }); }
     }
     function valeurs(nom) { return $$('[name="' + nom + '"]', f).filter(function (x) { return (x.type !== 'radio' && x.type !== 'checkbox') || x.checked; }).map(function (x) { return x.value.trim(); }).filter(Boolean); }
     function erreur(msg, champ) { retour.className = 'retour erreur'; retour.textContent = msg; if (champ) champ.focus(); return false; }
@@ -746,7 +746,7 @@
       envoyer.disabled = true;
       if (robin) robin.sauter($$('[data-perche]').length - 1, { force: true });
     });
-    voir(0);
+    voir(0, true);
     if (nav) nav.hidden = false;
   }
 
