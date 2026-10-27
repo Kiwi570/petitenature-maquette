@@ -276,21 +276,29 @@
     },
 
     'repas': function (ctx, w, h) {
-      ctx.fillStyle = '#f4efe4'; ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = 'rgba(255,43,58,.18)'; ctx.lineWidth = 6;
-      for (let x = -h; x < w; x += 34) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + h, h); ctx.stroke(); }
-      for (let y = 0; y < h; y += 34) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-      const r = rng(41);
-      const places = [[0.25, 0.32], [0.62, 0.28], [0.4, 0.72], [0.78, 0.68]];
-      places.forEach(function (p) {
-        const x = w * p[0], y = h * p[1], s = Math.min(w, h) * 0.15;
-        ctx.fillStyle = 'rgba(42,36,32,.12)'; ctx.beginPath(); ctx.arc(x + 4, y + 6, s, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fbfaf6'; ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#d9d0bf'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, s * 0.72, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = '#8b8d93'; ctx.fillRect(x - s * 1.35, y - s * 0.7, 5, s * 1.4); ctx.fillRect(x + s * 1.25, y - s * 0.7, 5, s * 1.4);
-        ctx.fillStyle = 'rgba(120,150,90,' + (0.4 + r() * 0.3) + ')'; ctx.beginPath(); ctx.ellipse(x, y, s * 0.3, s * 0.18, r(), 0, Math.PI * 2); ctx.fill();
-      });
-      grain(ctx, w, h, 0.03);
+      ctx.fillStyle = '#1b1714'; ctx.fillRect(0, 0, w, h);
+      const g = ctx.createRadialGradient(w * 0.5, h * 0.45, 4, w * 0.5, h * 0.45, Math.max(w, h) * 0.7);
+      g.addColorStop(0, 'rgba(255,214,160,.10)'); g.addColorStop(1, 'rgba(255,214,160,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      const cx = w * 0.5, cy = h * 0.5, R = Math.min(w, h) * 0.3;
+      function trait(largeur, couleur, flou, dessin) {
+        ctx.save(); ctx.strokeStyle = couleur; ctx.lineWidth = largeur; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.shadowColor = '#ff2b3a'; ctx.shadowBlur = flou; ctx.beginPath(); dessin(); ctx.stroke(); ctx.restore();
+      }
+      function dessin() {
+        ctx.moveTo(cx + R, cy); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+        ctx.moveTo(cx + R * 0.72, cy); ctx.arc(cx, cy, R * 0.72, 0, Math.PI * 2);
+        const xf = cx - R * 1.45;
+        ctx.moveTo(xf, cy - R * 0.95); ctx.lineTo(xf, cy + R * 0.95);
+        for (let k = -1; k <= 1; k++) { ctx.moveTo(xf + k * R * 0.09, cy - R * 0.95); ctx.lineTo(xf + k * R * 0.09, cy - R * 0.55); }
+        ctx.moveTo(xf - R * 0.09, cy - R * 0.55); ctx.quadraticCurveTo(xf, cy - R * 0.4, xf + R * 0.09, cy - R * 0.55);
+        const xc = cx + R * 1.45;
+        ctx.moveTo(xc, cy - R * 0.95); ctx.quadraticCurveTo(xc + R * 0.16, cy - R * 0.5, xc, cy - R * 0.05);
+        ctx.lineTo(xc, cy + R * 0.95);
+      }
+      trait(6, 'rgba(255,43,58,.35)', 18, dessin);
+      trait(1.6, '#ffd9d6', 8, dessin);
+      grain(ctx, w, h, 0.05);
     }
   };
 

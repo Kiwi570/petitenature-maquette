@@ -30,6 +30,7 @@ uniform float uHover;
 uniform vec2 uRes;
 uniform vec2 uImg;
 uniform vec2 uMouse;
+uniform vec2 uFocus;
 varying vec2 vUv;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -43,7 +44,7 @@ float fbm(vec2 p) { float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a
 void main() {
   float s = max(uRes.x / uImg.x, uRes.y / uImg.y);
   vec2 size = uImg * s;
-  vec2 off = (size - uRes) * 0.5;
+  vec2 off = (size - uRes) * uFocus;
   vec2 uv = (vUv * uRes + off) / size;
 
   vec2 dm = vUv - uMouse;
@@ -64,6 +65,11 @@ void main() {
   gl_FragColor = vec4(c, 1.0);
 }
 `;
+
+function focus(fig) {
+  const p = (fig.getAttribute('data-pos') || '50% 50%').split(/\s+/).map((v) => parseFloat(v) / 100);
+  return [isNaN(p[0]) ? 0.5 : p[0], 1 - (isNaN(p[1]) ? 0.5 : p[1])];
+}
 
 const MAX_ACTIFS = 4;
 let actifs = 0;
@@ -93,7 +99,8 @@ function demarrer(fig) {
       vertex, fragment,
       uniforms: {
         tMap: { value: texture }, uProg: { value: 0 }, uTime: { value: 0 }, uHover: { value: 0 },
-        uRes: { value: [1, 1] }, uImg: { value: [img.naturalWidth || 1, img.naturalHeight || 1] }, uMouse: { value: [0.5, 0.5] }
+        uRes: { value: [1, 1] }, uImg: { value: [img.naturalWidth || 1, img.naturalHeight || 1] }, uMouse: { value: [0.5, 0.5] },
+        uFocus: { value: focus(fig) }
       }
     });
     const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });

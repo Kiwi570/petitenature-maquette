@@ -15,6 +15,11 @@ Les mentions « à compléter » visibles sur les pages : public, durée, jauge,
 adresse postale, forme juridique, directeur de la publication, numéro de licence au format actuel, portrait
 d'Élise Truchard, photos de Faire un feu, extraits sonores, logos des partenaires.
 
+## Avant la mise en ligne définitive
+
+La maquette demande aux moteurs de recherche de ne pas l'indexer (`<meta name="robots" content="noindex, nofollow">`
+dans `outils/build.mjs`). Retirer cette ligne et relancer `node outils/build.mjs .` quand le site remplacera petitenature.fr.
+
 ## Technique
 
 GSAP (ScrollTrigger, ScrollSmoother, Flip), OGL pour l'effet d'insolation cyanotype, polices Literata,

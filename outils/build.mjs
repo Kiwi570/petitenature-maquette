@@ -36,6 +36,12 @@ function image(key, o = {}) {
 }
 
 /* Visuel provisoire codé, ou image Grok si elle a été livrée. */
+const CADRAGE = {
+  'creations-hero': '50% 80%', 'agenda-hero': '50% 72%', 'compagnie-hero': '50% 75%',
+  'labos-imaginer': '50% 72%', 'labos-dire': '50% 60%', 'labos-ecrire': '50% 48%',
+  'programmer-hero': '50% 62%', 'contact-hero': '40% 50%', 'accueil-prochaine-date': '50% 62%',
+  'creations-allumette': '50% 40%'
+};
 function visuel(scene, grok, o = {}) {
   const cls = ['visuel', o.cls, o.parallaxe && 'parallaxe'].filter(Boolean).join(' ');
   if (grok && GROK.has(grok)) {
@@ -44,7 +50,8 @@ function visuel(scene, grok, o = {}) {
     if (o.alt) { o.alt = o.alt.replace(/^Visuel provisoire : /, ''); o.alt = o.alt.charAt(0).toUpperCase() + o.alt.slice(1); }
     const srcset = tailles.map((w) => `${R}assets/img/grok/${grok}-${w}.webp ${w}w`).join(', ');
     const mob = o.mobile && GROK.has(o.mobile) ? `<source media="(max-width: 700px)" srcset="${GROK_TAILLES[o.mobile].map((w) => `${R}assets/img/grok/${o.mobile}-${w}.webp ${w}w`).join(', ')}">` : '';
-    return `<figure class="${cls}${o.insole === false ? '' : ' insole'}"${o.style ? ` style="${o.style}"` : ''}><picture>${mob}<img src="${R}assets/img/grok/${grok}-${tailles[tailles.length - 1]}.webp" srcset="${srcset}" sizes="${o.sizes || '100vw'}" alt="${esc(o.alt || '')}" loading="${o.eager ? 'eager' : 'lazy'}" decoding="async"></picture></figure>`;
+    const cadrage = o.pos || CADRAGE[grok] || '';
+    return `<figure class="${cls}${o.insole === false ? '' : ' insole'}"${o.style ? ` style="${o.style}"` : ''}${cadrage ? ` data-pos="${cadrage}"` : ''}><picture>${mob}<img src="${R}assets/img/grok/${grok}-${tailles[tailles.length - 1]}.webp" srcset="${srcset}" sizes="${o.sizes || '100vw'}" alt="${esc(o.alt || '')}" loading="${o.eager ? 'eager' : 'lazy'}" decoding="async"${cadrage ? ` style="object-position:${cadrage}"` : ''}></picture></figure>`;
   }
   return `<figure class="${cls}"${o.style ? ` style="${o.style}"` : ''}><canvas data-scene="${scene}" role="img" aria-label="${esc(o.alt || 'Visuel provisoire')}"></canvas><span class="provisoire">Visuel provisoire</span></figure>`;
 }
@@ -109,10 +116,12 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <meta property="og:image" content="${R}assets/img/partage.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ede6d6">
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/webp" href="${R}assets/img/identite/rouge-gorge-480.webp">
-<link rel="preload" href="${R}assets/fonts/literata-var.woff" as="font" type="font/woff" crossorigin>
-<link rel="preload" href="${R}assets/fonts/tilt-neon-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="${R}assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${R}assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${R}assets/css/site.css">
+${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
 <script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
 </head>
 <body data-racine="${R}"${classe ? ` class="${classe}"` : ''}>
@@ -160,6 +169,20 @@ ${scripts}
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, typo(html));
   return html;
+}
+
+function jsonld(fichier) {
+  const c = PN.compagnie;
+  const org = { '@type': 'PerformingGroup', name: c.nom, foundingDate: '2007', email: c.email, telephone: c.telephones.map((t) => '+33 ' + t.slice(1)),
+    address: { '@type': 'PostalAddress', postalCode: '28220', addressLocality: 'Cloyes-les-Trois-Rivières', addressCountry: 'FR' },
+    sameAs: [c.instagram, c.facebook], description: 'Lectures à voix haute et labos littéraires.' };
+  const graphe = [org];
+  if (fichier === 'agenda.html' || fichier === 'index.html') {
+    evts.filter((e) => finEvt(e) >= AUJOURDHUI).forEach((e) => graphe.push({ '@type': 'Event', name: e.titre + ' (lecture à voix haute)', startDate: e.debut,
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', eventStatus: 'https://schema.org/EventScheduled',
+      location: { '@type': 'Place', name: e.lieu.replace(/ \(.*\)/, ''), address: e.adresse }, performer: { '@type': 'PerformingGroup', name: c.nom }, organizer: { '@type': 'PerformingGroup', name: c.nom } }));
+  }
+  return `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': graphe })}</script>`;
 }
 
 function pied() {
@@ -261,7 +284,9 @@ function carteFrance({ id = 'carte', titreListe = true } = {}) {
     const p = CARTE.lieux[k];
     return `<g class="point${k === 'cloyes' ? ' siege' : ''}" data-id="${k}"><circle class="h" cx="${p.x}" cy="${p.y}" r="7"/><circle class="c" cx="${p.x}" cy="${p.y}" r="2.6"/><text x="${p.x}" y="${p.y}" dx="5" dy="2.5" font-size="7.5"${fixes.has(k) ? ' data-fixe' : ' style="opacity:0"'}>${esc(k === 'cloyes' ? 'Cloyes, siège' : p.nom.replace(' (maison de George Sand)', ''))}</text></g>`;
   }).join('');
-  const liste = pts.map((k) => `<li data-lieu="${k}" tabindex="0"${k === 'cloyes' ? ' class="siege"' : ''}><span><b>${esc(CARTE.lieux[k].nom)}</b><br><span class="meta">${[...lieuxUtilises.get(k)].slice(0, 3).map(esc).join(' ; ')}</span></span></li>`).join('');
+  const item = (k) => `<li data-lieu="${k}" tabindex="0"${k === 'cloyes' ? ' class="siege"' : ''}><span><b>${esc(CARTE.lieux[k].nom)}</b><br><span class="meta">${[...new Set([...lieuxUtilises.get(k)])].slice(0, 2).map(esc).join(' ; ')}</span></span></li>`;
+  const liste = pts.slice(0, 7).map(item).join('');
+  const reste = pts.slice(7).map(item).join('');
   return `<div class="carte" data-carte id="${id}">
   <figure>
     <div class="carte__cadre"><svg viewBox="${vbS}" data-vb-france="0 0 ${CARTE.w} ${CARTE.h}" role="img" aria-labelledby="${id}-t"><title id="${id}-t">Carte des lieux où la compagnie a lu, du siège de Cloyes vers chaque lieu</title>${regions}<g>${trajets}</g><g>${points}</g></svg></div>
@@ -270,6 +295,7 @@ function carteFrance({ id = 'carte', titreListe = true } = {}) {
   <div>
     ${titreListe ? '<p class="meta" style="margin-bottom:0.6rem">Les lieux cités sur le site actuel</p>' : ''}
     <ul class="carte__liste">${liste}</ul>
+    ${reste ? `<details class="carte__plus" data-ouvert-large><summary>Les ${pts.length - 7} autres lieux</summary><ul class="carte__liste">${reste}</ul></details>` : ''}
   </div>
 </div>`;
 }
@@ -278,7 +304,7 @@ function appelProgrammer(titre = 'Programmer une lecture', grok = 'accueil-hero'
   return `<section class="section nuit" data-fil="c" data-fil-y="0.2">
   <div class="wrap appel">
     <div style="display:grid;gap:1.4rem">
-      ${neon('À vous', { cls: 'neon--moyen', perche: 'd' })}
+      ${neon('À vous', { cls: 'neon--moyen', perche: grok === 'accueil-programmer' ? '' : 'd' })}
       <h2 class="titre--moyen titre">${titre}</h2>
       <p class="lecture">Médiathèque, établissement scolaire, musée, festival, lieu de soin ou entreprise : décrivez votre projet en quatre étapes pour préparer une proposition avec la compagnie.</p>
       <div class="actions"><a class="btn btn--neon" href="${R}programmer.html">Commencer la demande</a><span class="copie meta"><code>${PN.compagnie.email}</code><button type="button" data-copier="${PN.compagnie.email}">Copier</button></span></div>
@@ -407,7 +433,7 @@ function accueil() {
       <p class="dida">(Le rouge-gorge, emblème de la compagnie. Il vous suit de page en page.)</p>
     </div>
     <div class="corps">
-      <h2 class="titre titre--moyen" data-perche="g">Une compagnie de lecture</h2>
+      <h2 class="titre titre--moyen">Une compagnie de lecture</h2>
       <p class="lecture">Créée en 2007 par Élise Truchard et Ale, la Compagnie Petite Nature se consacre aujourd’hui aux projets littéraires portés par Élise Truchard : lectures à voix haute et labos littéraires.</p>
       <p class="lecture">Elle envisage la lecture à voix haute comme un travail artistique à part entière : choisir et assembler les textes, construire une dramaturgie, travailler le rythme, la voix, l’adresse et les conditions d’écoute.</p>
       <p><a class="lien-fleche" href="${R}compagnie.html">Découvrir la compagnie</a></p>
@@ -540,11 +566,11 @@ function lectures() {
       </div>
     </div>
     <div class="cartes">
-      ${PN.lectures.map((l) => `<a class="carte-lecture cat-${l.cat}" href="${R}lectures/${l.slug}.html" data-cat="${l.cat}" data-tilt data-curseur="Lire">
-        ${image(l.img, { sizes: '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 100vw' })}
+      ${PN.lectures.map((l) => { const une = prochain && prochain.lecture === l.slug; return `<a class="carte-lecture cat-${l.cat}${une ? ' carte-lecture--une' : ''}" href="${R}lectures/${l.slug}.html" data-cat="${l.cat}" data-tilt data-curseur="Lire">
+        ${image(l.img, { sizes: une ? '(min-width: 1200px) 50vw, 100vw' : '(min-width: 1200px) 25vw, (min-width: 860px) 33vw, (min-width: 560px) 50vw, 100vw' })}
         <span class="carte-lecture__tube"></span>
-        <span class="carte-lecture__in"><span class="etiquette">${PN.categories[l.cat].nom}</span><h3>${esc(l.titre)}</h3><p>${esc(l.accroche)}</p></span>
-      </a>`).join('')}
+        <span class="carte-lecture__in"><span class="etiquette">${PN.categories[l.cat].nom}</span><h3>${esc(l.titre)}</h3><p>${esc(l.accroche)}</p>${une ? `<span class="carte-lecture__date">Prochaine date : ${fCourt.format(debut(prochain))}, ${esc(ville(prochain.adresse))}</span>` : ''}</span>
+      </a>`; }).join('')}
     </div>
   </div>
 </section>
@@ -648,7 +674,7 @@ const LABOS = {
     ]
   },
   imaginer: {
-    fichier: 'imaginer-ensemble.html', mot: 'Imaginer', titre: 'Imaginer ensemble', grok: 'labos-imaginer',
+    fichier: 'imaginer-ensemble.html', mot: 'Imaginer', titre: 'Imaginer ensemble', grok: 'labos-imaginer', enteteGrok: 'labos-imaginer',
     intro: 'Ces projets explorent l’imaginaire collectif à travers des expériences sensibles autour de la littérature.',
     img: 'labos/paysans-paysages-sauvage-vegetaux',
     projets: [
@@ -699,7 +725,7 @@ ${Object.values(LABOS).map((L, k) => `
   <div class="wrap chapitre">
     <div class="chapitre__entete">
       <div style="display:grid;gap:1rem">${neon(L.mot, { cls: k === 1 ? 'neon--nuit' : '', perche: 'd' })}<p class="chapeau">${L.intro}</p></div>
-      ${image(L.img, { cls: 'ratio-43 insole parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
+      ${L.enteteGrok && GROK.has(L.enteteGrok) ? visuel('', L.enteteGrok, { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw', pos: '50% 70%', alt: 'Un casque et un enregistreur posés sur de la mousse et des plantes sèches' }) : image(L.img, { cls: 'ratio-43 insole parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
     </div>
     <div class="projets">
       ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
@@ -880,9 +906,9 @@ function creations() {
   const pas = [];
   for (let i = 0; i < 22; i++) {
     const x = 40 + i * 44, yH = 40 + Math.sin(i * 0.5) * 8;
-    if (i < 15) pas.push(`<ellipse class="pas-homme" data-o="${i * 2}" cx="${x}" cy="${yH + (i % 2 ? 10 : -10)}" rx="9" ry="4.5" transform="rotate(${-6 + (i % 2) * 12} ${x} ${yH})"/>`);
+    if (i < 15) pas.push(`<ellipse class="pas-homme" data-o="${i * 2}" cx="${x}" cy="${yH + (i % 2 ? 11 : -11)}" rx="12" ry="5.5" transform="rotate(${-6 + (i % 2) * 12} ${x} ${yH})"/>`);
     const xc = 30 + i * 44, yc = 92 + Math.sin(i * 0.4 + 1) * 6 - (i > 15 ? (i - 15) * 7 : 0);
-    [[0, 0], [7, 4], [14, -2], [21, 3]].forEach(([dx, dy], k) => pas.push(`<ellipse class="pas-chien" data-o="${i * 2 + 1 + k * 0.01}" cx="${xc + dx}" cy="${yc + dy}" rx="2.6" ry="2.2"/>`));
+    [[0, 0], [8, 5], [16, -2], [24, 4]].forEach(([dx, dy], k) => pas.push(`<ellipse class="pas-chien" data-o="${i * 2 + 1 + k * 0.01}" cx="${xc + dx}" cy="${yc + dy}" rx="3.6" ry="3"/>`));
   }
   return page({
     fichier: 'creations-sceniques.html', actif: 'creations', classe: 'page-feu',
@@ -906,6 +932,7 @@ function creations() {
       <p class="lecture feu-texte chapeau">Avec <i>Faire un feu</i>, Élise Truchard adapte pour la scène la nouvelle de Jack London et construit le spectacle autour de la confrontation entre l’homme et son environnement.</p>
       <p class="lecture feu-texte">Le récit interroge la croyance de l’homme en sa capacité à maîtriser la nature. Malgré les signes qui l’entourent, le personnage poursuit sa route, tandis que le chien, guidé par son instinct, perçoit ce que l’homme refuse de voir.</p>
       <div class="traces" data-traces aria-hidden="true"><svg viewBox="0 0 1000 130" preserveAspectRatio="xMidYMid meet">${pas.join('')}</svg></div>
+      <p class="dida dida--petite">(Dans la neige, les pas de l’homme, et ceux du chien, en rouge.)</p>
       <p class="lecture feu-texte">Cette tension traverse toute l’écriture du spectacle : théâtre d’ombre, arts plastiques, création visuelle et sonore en direct, transformation des corps et des présences.</p>
       <p class="citation feu-texte">Le chien apparaît d’abord comme une ombre avant de devenir vivant face aux spectateurs ; l’homme suit le mouvement inverse, du vivant vers la marionnette.</p>
     </div>
@@ -1090,7 +1117,7 @@ function contact() {
 <section class="section" data-fil="d" data-fil-y="0.1">
   <div class="wrap cote-a-cote" style="align-items:start">
     <div class="corps">
-      <h2 class="titre titre--moyen" data-perche="g">Compagnie Petite Nature</h2>
+      <h2 class="titre titre--moyen">Compagnie Petite Nature</h2>
       <p class="copie"><code>${c.email}</code><button type="button" data-copier="${c.email}">Copier l’adresse</button></p>
       ${c.telephones.map((t) => `<p class="copie"><code>${t}</code><button type="button" data-copier="${t.replace(/\s/g, '')}">Copier le numéro</button></p>`).join('')}
       <p>${c.ville}<br><span class="meta">Adresse postale complète ${ac()}</span></p>

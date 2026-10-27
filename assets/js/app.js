@@ -107,6 +107,7 @@
   function fermerMenu() {
     if (!menu || menu.hidden) return;
     menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); entete.classList.remove('menu-ouvert');
+    var sw = $('#smooth-wrapper'); if (sw) sw.inert = false;
     D.body.style.overflow = '';
   }
   if (menuBtn && menu) {
@@ -114,6 +115,7 @@
       var ouvrir = menu.hidden;
       if (!ouvrir) { fermerMenu(); return; }
       menu.hidden = false; menuBtn.setAttribute('aria-expanded', 'true'); entete.classList.add('menu-ouvert');
+      var sw = $('#smooth-wrapper'); if (sw) sw.inert = true;
       D.body.style.overflow = 'hidden';
       $$('.neon', menu).forEach(function (n, i) { allumer(n, 0.08 * i); });
       var premier = $('a', menu); if (premier) premier.focus();
@@ -319,7 +321,7 @@
   var robin = null;
   function initRobin() {
     var contenu = $('#smooth-content');
-    var perches = $$('[data-perche]');
+    var perches = $$('[data-perche]').filter(function (p) { return W.innerWidth >= 960 || p.classList.contains('neon') || p.querySelector('.neon'); });
     if (!contenu || !perches.length || calme || !gsapOK) return;
     var el = D.createElement('div');
     el.className = 'rouge-gorge';
@@ -327,9 +329,24 @@
     el.innerHTML = '<img src="' + RACINE + 'assets/img/identite/rouge-gorge-480.webp" alt="" width="480" height="557">';
     contenu.appendChild(el);
     var etat = { x: -200, y: -300, dir: 1, i: -1, vol: null };
+    function boiteTexte(p) {
+      try {
+        var rg = D.createRange(); rg.selectNodeContents(p);
+        var lignes = Array.prototype.filter.call(rg.getClientRects(), function (x) { return x.width > 2 && x.height > 2; });
+        if (!lignes.length) return p.getBoundingClientRect();
+        var haut = Math.min.apply(null, lignes.map(function (x) { return x.top; }));
+        var premiere = lignes.filter(function (x) { return x.top < haut + 4; });
+        return {
+          left: Math.min.apply(null, premiere.map(function (x) { return x.left; })),
+          right: Math.max.apply(null, premiere.map(function (x) { return x.right; })),
+          top: haut, width: 0, height: premiere[0].height
+        };
+      } catch (e) { return p.getBoundingClientRect(); }
+    }
     function pos(p) {
       var cr = contenu.getBoundingClientRect();
-      var r = p.getBoundingClientRect();
+      var r = p.matches('h1, h2, h3, p, .neon') ? boiteTexte(p) : p.getBoundingClientRect();
+      if (r.width === 0) r.width = r.right - r.left;
       var w = el.offsetWidth || 70, h = w * 1.16;
       var mode = p.getAttribute('data-perche');
       var x = mode === 'g' ? r.left - cr.left + w * 0.1 : mode === 'c' ? r.left - cr.left + r.width / 2 - w / 2 : r.right - cr.left - w * 0.95;
@@ -390,6 +407,7 @@
           .to(el, { scaleY: 1, scaleX: 1, duration: 0.4, ease: 'elastic.out(1, 0.4)' });
       },
       sauter: sauter,
+      nb: perches.length,
       placer: function () { etat.i = 0; var c = pos(perches[0]); poser(c.x, c.y, 1); }
     };
   }
@@ -602,9 +620,10 @@
         '<li class="vide">Aucune date à venir publiée pour l’instant. Les prochaines dates seront annoncées ici et dans la lettre d’information.</li>';
       var parAn = {};
       p.forEach(function (e) { var a = fAn.format(parseDebut(e)); (parAn[a] = parAn[a] || []).push(e); });
-      anciens.innerHTML = Object.keys(parAn).sort().reverse().map(function (a) {
-        return '<li><h3 class="annee">' + a + '</h3><ul class="agenda-liste">' + parAn[a].map(function (e) { return carteEvt(e, true); }).join('') + '</ul></li>';
-      }).join('');
+      anciens.innerHTML = Object.keys(parAn).sort().reverse().map(function (a, k) {
+        return '<li><details class="annees-passees"' + (k === 0 ? ' open' : '') + '><summary>' + a + ' <span class="n">' + parAn[a].length + ' date' + (parAn[a].length > 1 ? 's' : '') + '</span></summary><ul class="agenda-liste">' + parAn[a].map(function (e) { return carteEvt(e, true); }).join('') + '</ul></details></li>';
+      }).join('') || '<li class="vide">Aucune date passée pour ce type de rendez-vous.</li>';
+      $$('details', anciens).forEach(function (dt) { dt.addEventListener('toggle', function () { if (gsapOK) ST.refresh(); }); });
       $$('[data-ics]', zone).forEach(function (b) {
         b.addEventListener('click', function () { var ev = (PN.evenements || []).filter(function (x) { return x.id === b.getAttribute('data-ics'); })[0]; if (ev) ics(ev); });
       });
@@ -744,7 +763,7 @@
       retour.className = 'retour ok';
       retour.textContent = 'Demande prête. Dans cette maquette, rien n’est envoyé : sur le site final, elle arrivera à compagnie@petitenature.fr.';
       envoyer.disabled = true;
-      if (robin) robin.sauter($$('[data-perche]').length - 1, { force: true });
+      if (robin) robin.sauter(robin.nb - 1, { force: true });
     });
     voir(0, true);
     if (nav) nav.hidden = false;
@@ -752,6 +771,8 @@
 
   /* ------------------------------------------------------------ Carte des voix */
   function initCarte() {
+    if (W.innerWidth >= 960) $$('[data-ouvert-large]').forEach(function (d) { d.open = true; });
+    $$('.carte__plus').forEach(function (d) { d.addEventListener('toggle', function () { if (gsapOK) ST.refresh(); }); });
     $$('[data-carte]').forEach(function (bloc) {
       var svg = $('svg', bloc); if (!svg) return;
       var vbFin = svg.getAttribute('viewBox').split(/\s+/).map(Number);
@@ -760,10 +781,15 @@
       function echelle(vb) {
         var px = svg.getBoundingClientRect().width || 600;
         var k = vb[2] / px;
+        var milieu = vb[0] + vb[2] * 0.55;
         points.forEach(function (p) {
           var c = $('circle.c', p), h = $('circle.h', p), t = $('text', p);
           c.setAttribute('r', 4.2 * k); h.setAttribute('r', 11 * k);
-          if (t) { t.setAttribute('font-size', 12 * k); t.setAttribute('dx', 8 * k); t.setAttribute('dy', 4 * k); t.style.strokeWidth = 3 * k + 'px'; }
+          if (t) {
+            var droite = +c.getAttribute('cx') > milieu;
+            t.setAttribute('text-anchor', droite ? 'end' : 'start');
+            t.setAttribute('font-size', 12 * k); t.setAttribute('dx', (droite ? -8 : 8) * k); t.setAttribute('dy', 4 * k); t.style.strokeWidth = 3 * k + 'px';
+          }
         });
       }
       echelle(vbFin);
