@@ -1,0 +1,2 @@
+GSAP 3.15 (https://gsap.com), licence standard GSAP, gratuite y compris pour un usage commercial.
+Fichiers : gsap, ScrollTrigger, ScrollSmoother, Flip.
