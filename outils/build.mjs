@@ -128,7 +128,7 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <link rel="icon" type="image/webp" href="${R}assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="${R}assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${R}assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${R}assets/css/site.css">
+<link rel="stylesheet" href="${R}assets/css/site.css?v=20261028-2">
 ${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
 <script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
 </head>
@@ -159,15 +159,15 @@ ${pied()}
 </div></div>
 <div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
 ${onde ? `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><clipPath id="onde-clip" clipPathUnits="objectBoundingBox"><path d="${ondeChemin(0.07, 0.035, 2.4)}"/></clipPath></svg>` : ''}
-<script src="${R}assets/data/site.js"></script>
-<script src="${R}assets/data/images.js"></script>
+<script src="${R}assets/data/site.js?v=20261028-2"></script>
+<script src="${R}assets/data/images.js?v=20261028-2"></script>
 <script src="${R}assets/vendor/gsap.min.js"></script>
 <script src="${R}assets/vendor/ScrollTrigger.min.js"></script>
 <script src="${R}assets/vendor/ScrollSmoother.min.js"></script>
 <script src="${R}assets/vendor/Flip.min.js"></script>
-<script src="${R}assets/js/scenes.js"></script>
-<script src="${R}assets/js/app.js"></script>
-<script type="module" src="${R}assets/js/gl.js"></script>
+<script src="${R}assets/js/scenes.js?v=20261028-2"></script>
+<script src="${R}assets/js/app.js?v=20261028-2"></script>
+<script type="module" src="${R}assets/js/gl.js?v=20261028-2"></script>
 ${scripts}
 </body>
 </html>

@@ -137,6 +137,47 @@
   W.addEventListener('scroll', surScroll, { passive: true });
   surScroll();
 
+  /* ------------------------------------------------------------ Hauteurs réelles (en-tête, barre du bas) */
+  if (entete) {
+    var poserEntete = function () { H.style.setProperty('--entete-h', entete.offsetHeight + 'px'); };
+    poserEntete();
+    if (W.ResizeObserver) new W.ResizeObserver(poserEntete).observe(entete);
+    else W.addEventListener('resize', poserEntete);
+  }
+
+  /* ------------------------------------------------------------ Barre d'action du bas (téléphone et tablette) */
+  var barre = null;
+  (function () {
+    var page = (W.location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '');
+    if (page === 'programmer' || $('.erreur-404')) return;
+    var liens = [['programmer.html', 'Programmer une lecture', 'btn btn--neon'], ['contact.html', 'Contact', 'btn btn--trait']]
+      .filter(function (l) { return l[0].replace('.html', '') !== page; });
+    barre = D.createElement('nav');
+    barre.className = 'barre-bas';
+    barre.setAttribute('aria-label', 'Actions rapides');
+    barre.innerHTML = liens.map(function (l) { return '<a class="' + l[2] + '" href="' + RACINE + l[0] + '">' + l[1] + '</a>'; }).join('');
+    D.body.appendChild(barre);
+    H.classList.add('a-barre');
+    var poserBarre = function () { H.style.setProperty('--barres-h', barre.offsetHeight + 'px'); };
+    poserBarre();
+    if (W.ResizeObserver) new W.ResizeObserver(poserBarre).observe(barre);
+    var etat = { hero: true, masque: 0 };
+    var maj = function () { barre.classList.toggle('est-visible', !etat.hero && !etat.masque && !(menu && !menu.hidden)); };
+    if (!W.IntersectionObserver) { etat.hero = false; maj(); return; }
+    var heros = $('.hero, .ouverture');
+    if (heros) new W.IntersectionObserver(function (e) { etat.hero = e[0].isIntersecting; maj(); }).observe(heros);
+    else etat.hero = false;
+    var vus = new Set();
+    var io = new W.IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) vus.add(e.target); else vus.delete(e.target); });
+      etat.masque = vus.size; maj();
+    });
+    $$('form, .pied').forEach(function (el) { io.observe(el); });
+    if (menuBtn) menuBtn.addEventListener('click', function () { setTimeout(maj, 0); });
+    D.addEventListener('keydown', function (e) { if (e.key === 'Escape') setTimeout(maj, 0); });
+    maj();
+  })();
+
   /* ------------------------------------------------------------ Défilement fluide */
   var smoother = null;
   if (anime && fin && W.ScrollSmoother && W.innerWidth >= 960 && $('#smooth-wrapper')) {
@@ -534,7 +575,7 @@
       var dist = function () { return Math.max(0, piste.scrollWidth - W.innerWidth); };
       gsap.to(piste, {
         x: function () { return -dist(); }, ease: 'none',
-        scrollTrigger: { trigger: sec, start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1 }
+        scrollTrigger: { trigger: sec, start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 0.8, invalidateOnRefresh: true }
       });
     });
   }
@@ -788,11 +829,18 @@
           if (t) {
             var droite = +c.getAttribute('cx') > milieu;
             t.setAttribute('text-anchor', droite ? 'end' : 'start');
-            t.setAttribute('font-size', 12 * k); t.setAttribute('dx', (droite ? -8 : 8) * k); t.setAttribute('dy', 4 * k); t.style.strokeWidth = 3 * k + 'px';
+            t.style.fontSize = 12 * k + 'px'; t.setAttribute('dx', (droite ? -8 : 8) * k); t.setAttribute('dy', 4 * k); t.style.strokeWidth = 3 * k + 'px';
           }
         });
       }
       echelle(vbFin);
+      // Sous ScrollSmoother, position: sticky ne tient plus : la carte est épinglée sous l'en-tête réel.
+      var fig = $('figure', bloc);
+      if (smoother && fig && W.innerWidth >= 960) {
+        fig.classList.add('est-epinglee');
+        var haut = function () { return (entete ? entete.offsetHeight : 0) + 16; };
+        ST.create({ trigger: fig, start: function () { return 'top ' + haut(); }, endTrigger: bloc, end: function () { return 'bottom ' + (haut() + fig.offsetHeight); }, pin: true, pinSpacing: false, invalidateOnRefresh: true });
+      }
       W.addEventListener('resize', function () { echelle(svg.getAttribute('viewBox').split(/\s+/).map(Number)); });
       $$('[data-lieu]', bloc).forEach(function (li) {
         var p = $('.point[data-id="' + li.getAttribute('data-lieu') + '"]', svg); if (!p) return;
