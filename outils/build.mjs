@@ -23,7 +23,7 @@ const adresse = (f) => URL_SITE + '/' + f.replace(/(^|\/)index\.html$/, '').repl
 
 let R = '';
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const ac = (t = 'à compléter') => `<span class="a-completer">${t}</span>`;
+const ac = (t = 'à compléter') => `<span class="a-completer">${t.length <= 26 ? t.replace(/ /g, '\u00a0') : t}</span>`;
 const lect = (slug) => PN.lectures.find((l) => l.slug === slug);
 
 /* ---------------------------------------------------------------- images */
@@ -97,12 +97,12 @@ function ondeChemin(base, amp, phase) {
   return d + ' L1,1 Z';
 }
 
-function page({ fichier, titre, description, corps, actif = '', classe = '', onde = false, scripts = '' }) {
+function page({ fichier, titre, description, corps, actif = '', classe = '', onde = false, scripts = '', avant = '', apres = '' }) {
   const prof = fichier.split('/').length - 1;
   R = '../'.repeat(prof);
   const contenu = typeof corps === 'function' ? corps() : corps;
   const nav = NAV.map(([h, t, k]) => `<a href="${R}${h}"${k === actif ? ' aria-current="page"' : ''}>${t}</a>`).join('');
-  const menuLiens = NAV.map(([h, t], i) => `<a href="${R}${h}" data-feuillet="${t}"><span class="neon neon--nuit">${t}</span></a>`).join('');
+  const menuLiens = NAV.map(([h, t, k]) => `<a href="${R}${h}" data-feuillet="${t}"${k === actif ? ' aria-current="page"' : ''}><span class="neon neon--nuit">${t}</span></a>`).join('');
   const html = `<!doctype html>
 <html lang="fr" class="sans-js">
 <head>
@@ -130,7 +130,7 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <link rel="preload" href="${R}assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${R}assets/css/site.css">
 ${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
-<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}setTimeout(function(){if(!window.PN_JS){h.classList.remove('js-entree','js-arrivee','js-arrivee-long');window.PN_SECOURS=1;}},3000);})();</script>
 </head>
 <body data-racine="${R}"${classe || onde ? ` class="${[classe, onde ? 'accueil' : ''].filter(Boolean).join(' ')}"` : ''}>
 <a class="passer" href="#contenu">Aller au contenu</a>
@@ -139,7 +139,7 @@ ${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
     <a class="logo" href="${R}index.html" data-feuillet="Petite Nature"><img src="${R}assets/img/identite/logo-480.webp" srcset="${R}assets/img/identite/logo-480.webp 480w, ${R}assets/img/identite/logo-960.webp 960w" sizes="11rem" width="4500" height="3000" alt="Compagnie Petite Nature, accueil"></a>
     <nav class="nav" aria-label="Navigation principale">${nav}</nav>
     <a class="btn btn--neon" href="${R}programmer.html">Programmer une lecture</a>
-    <button class="calme-btn" type="button" aria-pressed="false" title="Arrête les animations, le son reste au clic">Mode calme</button>
+    <button class="calme-btn" type="button" aria-pressed="false" title="Arrête les animations, le son reste au clic"><span class="calme-btn__txt">Mode calme</span></button>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span></span><span></span><span class="sr">Menu</span></button>
   </div>
 </header>
@@ -151,13 +151,13 @@ ${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
     <p class="meta">${PN.compagnie.telephones.join(' ou ')}</p>
   </div>
 </nav>
-<div id="smooth-wrapper"><div id="smooth-content">
+${avant}<div id="smooth-wrapper"><div id="smooth-content">
 <main id="contenu" tabindex="-1">
 ${contenu}
 </main>
 ${pied()}
 </div></div>
-<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
+${apres}<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
 <svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 ${onde ? `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><clipPath id="onde-clip" clipPathUnits="objectBoundingBox"><path d="${ondeChemin(0.07, 0.035, 2.4)}"/></clipPath></svg>` : ''}
 <script src="${R}assets/data/site.js"></script>
@@ -923,9 +923,10 @@ function creations() {
     fichier: 'creations-sceniques.html', actif: 'creations', classe: 'page-feu',
     titre: 'Faire un feu, Petite Nature',
     description: 'Faire un feu : adaptation et mise en scène d’Élise Truchard, d’après la nouvelle de Jack London. Théâtre d’ombre, arts plastiques, création visuelle et sonore en direct.',
+    /* neige et lueur hors du défilement fluide : elles restent collées à l'écran */
+    avant: '<canvas class="neige" aria-hidden="true"></canvas>\n',
+    apres: '<div class="flamme-lumiere" aria-hidden="true"></div>\n',
     corps: () => `
-<canvas class="neige" aria-hidden="true"></canvas>
-<div class="flamme-lumiere" aria-hidden="true"></div>
 <section class="ouverture nuit" style="background:transparent" data-fil="g" data-fil-y="0.3">
   <div class="wrap ouverture__titre tapuscrit">
     <p class="marge dida">(Le Grand Nord. Soixante-quinze degrés sous zéro. Un homme, un chien.)</p>

@@ -54,7 +54,8 @@ void main() {
 
   vec3 col = texture2D(tMap, uv).rgb;
   float lum = dot(col, vec3(0.299, 0.587, 0.114));
-  vec3 cyan = mix(vec3(0.055, 0.15, 0.40), vec3(0.93, 0.95, 0.985), smoothstep(0.06, 0.94, lum));
+  /* même correspondance que le filtre CSS #cyano qui tient l'image en attente : aucun saut de contraste */
+  vec3 cyan = vec3(0.055, 0.15, 0.40) + lum * vec3(0.875, 0.80, 0.585);
 
   float n = fbm(vUv * vec2(3.0, 4.0) + vec2(0.0, uTime * 0.04));
   float v = (1.0 - vUv.y) * 0.62 + n * 0.38;
@@ -86,7 +87,7 @@ function demarrer(fig) {
   const lancer = () => {
     let renderer;
     try {
-      renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, persiste ? 1.75 : 1.25), alpha: false, antialias: false, powerPreference: persiste ? 'high-performance' : 'low-power' });
+      renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, persiste ? 1.75 : 1.25), alpha: false, antialias: false, powerPreference: 'low-power' });
     } catch (e) { fig.classList.add('insole--faite'); liberer(); return; }
     const gl = renderer.gl;
     if (!gl) { fig.classList.add('insole--faite'); liberer(); return; }
@@ -112,9 +113,16 @@ function demarrer(fig) {
     };
     taille();
     fig.appendChild(canvas);
-    const rendre = () => { u.uTime.value = performance.now() / 1000; renderer.render({ scene: mesh }); };
+    /* le canevas suit la transformation de l'image (parallaxe, zoom d'ouverture) : rien ne saute quand il s'efface */
+    canvas.style.transformOrigin = getComputedStyle(img).transformOrigin;
+    const rendre = () => {
+      canvas.style.transform = img.style.transform || '';
+      u.uTime.value = performance.now() / 1000;
+      renderer.render({ scene: mesh });
+    };
     rendre();
-    window.addEventListener('resize', () => { taille(); rendre(); });
+    const surResize = () => { taille(); rendre(); };
+    window.addEventListener('resize', surResize);
 
     let boucle = 0, cibleHover = 0;
     const tourner = () => {
@@ -135,6 +143,7 @@ function demarrer(fig) {
         fig.addEventListener('pointerleave', () => { cibleHover = 0; if (!boucle) boucle = requestAnimationFrame(tourner); });
         return;
       }
+      window.removeEventListener('resize', surResize);
       canvas.remove();
       const ext = gl.getExtension('WEBGL_lose_context');
       if (ext) ext.loseContext();
@@ -151,7 +160,11 @@ function demarrer(fig) {
     }
   };
   const pret = () => (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(lancer);
-  if (img.complete && img.naturalWidth) pret(); else img.addEventListener('load', pret, { once: true });
+  /* image introuvable : on rend la place et la couleur, la file d'attente continue */
+  const echec = () => { fig.classList.add('insole--faite'); liberer(); };
+  if (img.complete && img.naturalWidth) pret();
+  else if (img.complete) echec();
+  else { img.addEventListener('load', pret, { once: true }); img.addEventListener('error', echec, { once: true }); }
 
   function liberer() {
     actifs = Math.max(0, actifs - 1);

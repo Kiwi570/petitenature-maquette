@@ -25,7 +25,7 @@
 <link rel="preload" href="assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css">
 
-<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}setTimeout(function(){if(!window.PN_JS){h.classList.remove('js-entree','js-arrivee','js-arrivee-long');window.PN_SECOURS=1;}},3000);})();</script>
 </head>
 <body data-racine="" class="page-feu">
 <a class="passer" href="#contenu">Aller au contenu</a>
@@ -34,23 +34,22 @@
     <a class="logo" href="index.html" data-feuillet="Petite Nature"><img src="assets/img/identite/logo-480.webp" srcset="assets/img/identite/logo-480.webp 480w, assets/img/identite/logo-960.webp 960w" sizes="11rem" width="4500" height="3000" alt="Compagnie Petite Nature, accueil"></a>
     <nav class="nav" aria-label="Navigation principale"><a href="compagnie.html">La compagnie</a><a href="lectures.html">Lectures</a><a href="labos.html">Labos</a><a href="creations-sceniques.html" aria-current="page">Créations</a><a href="agenda.html">Agenda</a><a href="contact.html">Contact</a></nav>
     <a class="btn btn--neon" href="programmer.html">Programmer une lecture</a>
-    <button class="calme-btn" type="button" aria-pressed="false" title="Arrête les animations, le son reste au clic">Mode calme</button>
+    <button class="calme-btn" type="button" aria-pressed="false" title="Arrête les animations, le son reste au clic"><span class="calme-btn__txt">Mode calme</span></button>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span></span><span></span><span class="sr">Menu</span></button>
   </div>
 </header>
 <nav id="menu" class="menu" hidden aria-label="Menu">
-  <a href="compagnie.html" data-feuillet="La compagnie"><span class="neon neon--nuit">La compagnie</span></a><a href="lectures.html" data-feuillet="Lectures"><span class="neon neon--nuit">Lectures</span></a><a href="labos.html" data-feuillet="Labos"><span class="neon neon--nuit">Labos</span></a><a href="creations-sceniques.html" data-feuillet="Créations"><span class="neon neon--nuit">Créations</span></a><a href="agenda.html" data-feuillet="Agenda"><span class="neon neon--nuit">Agenda</span></a><a href="contact.html" data-feuillet="Contact"><span class="neon neon--nuit">Contact</span></a>
+  <a href="compagnie.html" data-feuillet="La compagnie"><span class="neon neon--nuit">La compagnie</span></a><a href="lectures.html" data-feuillet="Lectures"><span class="neon neon--nuit">Lectures</span></a><a href="labos.html" data-feuillet="Labos"><span class="neon neon--nuit">Labos</span></a><a href="creations-sceniques.html" data-feuillet="Créations" aria-current="page"><span class="neon neon--nuit">Créations</span></a><a href="agenda.html" data-feuillet="Agenda"><span class="neon neon--nuit">Agenda</span></a><a href="contact.html" data-feuillet="Contact"><span class="neon neon--nuit">Contact</span></a>
   <div class="menu__pied">
     <a class="btn btn--neon" href="programmer.html">Programmer une lecture</a>
     <p class="meta">compagnie@petitenature.fr</p>
     <p class="meta">06 88 31 81 24 ou 06 46 31 45 47</p>
   </div>
 </nav>
+<canvas class="neige" aria-hidden="true"></canvas>
 <div id="smooth-wrapper"><div id="smooth-content">
 <main id="contenu" tabindex="-1">
 
-<canvas class="neige" aria-hidden="true"></canvas>
-<div class="flamme-lumiere" aria-hidden="true"></div>
 <section class="ouverture nuit" style="background:transparent" data-fil="g" data-fil-y="0.3">
   <div class="wrap ouverture__titre tapuscrit">
     <p class="marge dida">(Le Grand Nord. Soixante-quinze degrés sous zéro. Un homme, un chien.)</p>
@@ -80,11 +79,11 @@
     <div class="corps">
       <h2 class="titre titre--moyen" data-perche="g">Le spectacle en pratique</h2>
       <dl class="infos" style="border-top-color:#efe7da">
-        <dt>Distribution</dt><dd><span class="a-completer">à compléter</span></dd>
-        <dt>Durée</dt><dd><span class="a-completer">à compléter</span></dd>
-        <dt>Public</dt><dd><span class="a-completer">à compléter</span></dd>
-        <dt>Fiche technique</dt><dd><span class="a-completer">à compléter</span></dd>
-        <dt>Photos</dt><dd><span class="a-completer">à fournir</span></dd>
+        <dt>Distribution</dt><dd><span class="a-completer">à compléter</span></dd>
+        <dt>Durée</dt><dd><span class="a-completer">à compléter</span></dd>
+        <dt>Public</dt><dd><span class="a-completer">à compléter</span></dd>
+        <dt>Fiche technique</dt><dd><span class="a-completer">à compléter</span></dd>
+        <dt>Photos</dt><dd><span class="a-completer">à fournir</span></dd>
       </dl>
       <p>Le texte de Jack London a aussi été au cœur d’un labo avec neuf classes de collège : <a href="dire-ensemble.html#faire-un-feu">Faire un feu, au chœur des mots</a>.</p>
       <div class="actions"><a class="btn btn--neon" href="programmer.html#faire-un-feu">Accueillir le spectacle</a></div>
@@ -150,6 +149,7 @@
   </div>
 </footer>
 </div></div>
+<div class="flamme-lumiere" aria-hidden="true"></div>
 <div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
 <svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 

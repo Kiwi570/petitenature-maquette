@@ -25,7 +25,7 @@
 <link rel="preload" href="assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css">
 
-<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}setTimeout(function(){if(!window.PN_JS){h.classList.remove('js-entree','js-arrivee','js-arrivee-long');window.PN_SECOURS=1;}},3000);})();</script>
 </head>
 <body data-racine="">
 <a class="passer" href="#contenu">Aller au contenu</a>
@@ -34,7 +34,7 @@
     <a class="logo" href="index.html" data-feuillet="Petite Nature"><img src="assets/img/identite/logo-480.webp" srcset="assets/img/identite/logo-480.webp 480w, assets/img/identite/logo-960.webp 960w" sizes="11rem" width="4500" height="3000" alt="Compagnie Petite Nature, accueil"></a>
     <nav class="nav" aria-label="Navigation principale"><a href="compagnie.html">La compagnie</a><a href="lectures.html">Lectures</a><a href="labos.html">Labos</a><a href="creations-sceniques.html">Créations</a><a href="agenda.html">Agenda</a><a href="contact.html">Contact</a></nav>
     <a class="btn btn--neon" href="programmer.html">Programmer une lecture</a>
-    <button class="calme-btn" type="button" aria-pressed="false" title="Arrête les animations, le son reste au clic">Mode calme</button>
+    <button class="calme-btn" type="button" aria-pressed="false" title="Arrête les animations, le son reste au clic"><span class="calme-btn__txt">Mode calme</span></button>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span></span><span></span><span class="sr">Menu</span></button>
   </div>
 </header>
@@ -51,8 +51,8 @@
 
 <section class="ouverture"><div class="wrap tapuscrit"><p class="marge dida">(Les informations obligatoires, en clair.)</p><div class="corps legal"><h1 class="titre titre--moyen" data-perche="d">Mentions légales</h1><figure class="visuel ratio-169 insole"><picture><img src="assets/img/grok/lectures-fiche-fond-1168.webp" srcset="assets/img/grok/lectures-fiche-fond-480.webp 480w, assets/img/grok/lectures-fiche-fond-960.webp 960w, assets/img/grok/lectures-fiche-fond-1168.webp 1168w" sizes="(min-width: 960px) 60vw, 100vw" alt="Une pile de livres et des feuillets près d’une fenêtre" loading="lazy" decoding="async"></picture></figure>
 <h2>Éditeur du site</h2>
-<p>Compagnie Petite Nature, <span class="a-completer">forme juridique</span><br>Siège : 28220 Cloyes-sur-le-Loir, <span class="a-completer">adresse complète</span><br>SIRET 501 207 419 000 42, code APE 9001Z (arts du spectacle vivant)<br>Licence d’entrepreneur de spectacles n° 2-004471 <span class="a-completer">à vérifier : les récépissés délivrés depuis 2020 sont au format PLATESV</span><br>Contact : compagnie@petitenature.fr, 06 88 31 81 24 ou 06 46 31 45 47</p>
-<h2>Directeur ou directrice de la publication</h2><p><span class="a-completer">à compléter</span></p>
+<p>Compagnie Petite Nature, <span class="a-completer">forme juridique</span><br>Siège : 28220 Cloyes-sur-le-Loir, <span class="a-completer">adresse complète</span><br>SIRET 501 207 419 000 42, code APE 9001Z (arts du spectacle vivant)<br>Licence d’entrepreneur de spectacles n° 2-004471 <span class="a-completer">à vérifier : les récépissés délivrés depuis 2020 sont au format PLATESV</span><br>Contact : compagnie@petitenature.fr, 06 88 31 81 24 ou 06 46 31 45 47</p>
+<h2>Directeur ou directrice de la publication</h2><p><span class="a-completer">à compléter</span></p>
 <h2>Hébergement</h2><p>Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis.</p>
 <h2>Crédits</h2>
 <ul><li>Photographies et visuels : Compagnie Petite Nature, <span class="a-completer">auteurs et droits à confirmer pour chaque image</span>.</li><li>Fond de carte : IGN Admin Express, Licence ouverte.</li><li>Polices : Literata, Tilt Neon et Courier Prime, sous licence SIL Open Font License.</li></ul>
