@@ -544,7 +544,7 @@
   function initParallaxe() {
     if (!anime) return;
     $$('.parallaxe').forEach(function (fig) {
-      var img = $('img, canvas[data-scene]', fig); if (!img) return;
+      var img = $('img', fig); if (!img) return;
       gsap.set(img, { scale: 1.14 });
       gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: fig, start: 'top bottom', end: 'bottom top', scrub: true } });
     });

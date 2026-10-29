@@ -58,6 +58,16 @@ function visuel(scene, grok, o = {}) {
   return `<figure class="${cls}"${o.style ? ` style="${o.style}"` : ''}><canvas data-scene="${scene}" role="img" aria-label="${esc(o.alt || 'Visuel provisoire')}"></canvas><span class="provisoire">Visuel provisoire</span></figure>`;
 }
 
+/* Photo Grok 4:3 recadrée (480, 784, 1045), sans parallaxe ni insolation. */
+const PHOTOS = {
+  'onde-territoires-audio': 'Un enregistreur audio et un casque posés sur un rebord de fenêtre en bois, à côté d’un carnet ouvert et d’un crayon rouge',
+  'repas-novarina-table': 'Une longue table en bois dressée dans une salle en pierre, avec des assiettes, du pain, des serviettes de lin, des feuilles blanches et une serviette rouge'
+};
+function photo(cle, sizes, cls = '') {
+  const b = `${R}assets/img/grok/${cle}`;
+  return `<figure class="visuel${cls ? ' ' + cls : ''}"><img src="${b}-784.webp" srcset="${b}-480.webp 480w, ${b}-784.webp 784w, ${b}-1045.webp 1045w" sizes="${sizes}" width="1045" height="784" alt="${esc(PHOTOS[cle])}" loading="lazy" decoding="async"></figure>`;
+}
+
 function neon(texte, o = {}) {
   const tag = o.tag || 'h2';
   const cls = ['neon', o.cls].filter(Boolean).join(' ');
@@ -128,7 +138,7 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <link rel="icon" type="image/webp" href="${R}assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="${R}assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${R}assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${R}assets/css/site.css?v=20261028-2">
+<link rel="stylesheet" href="${R}assets/css/site.css?v=20261029">
 ${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
 <script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
 </head>
@@ -159,15 +169,14 @@ ${pied()}
 </div></div>
 <div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
 ${onde ? `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><clipPath id="onde-clip" clipPathUnits="objectBoundingBox"><path d="${ondeChemin(0.07, 0.035, 2.4)}"/></clipPath></svg>` : ''}
-<script src="${R}assets/data/site.js?v=20261028-2"></script>
-<script src="${R}assets/data/images.js?v=20261028-2"></script>
+<script src="${R}assets/data/site.js?v=20261029"></script>
+<script src="${R}assets/data/images.js?v=20261029"></script>
 <script src="${R}assets/vendor/gsap.min.js"></script>
 <script src="${R}assets/vendor/ScrollTrigger.min.js"></script>
 <script src="${R}assets/vendor/ScrollSmoother.min.js"></script>
 <script src="${R}assets/vendor/Flip.min.js"></script>
-<script src="${R}assets/js/scenes.js?v=20261028-2"></script>
-<script src="${R}assets/js/app.js?v=20261028-2"></script>
-<script type="module" src="${R}assets/js/gl.js?v=20261028-2"></script>
+<script src="${R}assets/js/app.js?v=20261029"></script>
+<script type="module" src="${R}assets/js/gl.js?v=20261029"></script>
 ${scripts}
 </body>
 </html>
@@ -687,8 +696,8 @@ const LABOS = {
     img: 'labos/paysans-paysages-sauvage-vegetaux',
     projets: [
       { id: 'sauvage', titre: 'Paysans Paysages « sauvage »', ou: 'Résidents d’EHPAD et hôpital de jour', resti: 'Restitution', img: 'labos/paysans-paysages-sauvage-vegetaux' },
-      { id: 'territoires', titre: 'Territoires, portraits sensibles', ou: 'Foyer de vie, Courville-sur-Eure', resti: 'Capsule sonore à écouter', scene: 'onde' },
-      { id: 'le-repas', titre: 'Le Repas, de Valère Novarina', ou: 'CAP cuisine et hôpital, Abbaye de Noirlac', resti: 'Spectacle', scene: 'repas' }
+      { id: 'territoires', titre: 'Territoires, portraits sensibles', ou: 'Foyer de vie, Courville-sur-Eure', resti: 'Capsule sonore à écouter', photo: 'onde-territoires-audio' },
+      { id: 'le-repas', titre: 'Le Repas, de Valère Novarina', ou: 'CAP cuisine et hôpital, Abbaye de Noirlac', resti: 'Spectacle', photo: 'repas-novarina-table' }
     ]
   }
 };
@@ -736,7 +745,7 @@ ${Object.values(LABOS).map((L, k) => `
       ${L.enteteGrok && GROK.has(L.enteteGrok) ? visuel('', L.enteteGrok, { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw', pos: '50% 70%', alt: 'Un casque et un enregistreur posés sur de la mousse et des plantes sèches' }) : image(L.img, { cls: 'ratio-43 insole parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
     </div>
     <div class="projets">
-      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
+      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : p.photo ? photo(p.photo, '(min-width: 960px) 30vw, 100vw') : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
     </div>
     <p><a class="lien-fleche" href="${R}${L.fichier}">Tous les projets « ${L.titre} »</a></p>
   </div>
@@ -859,7 +868,7 @@ function pageLabo(cle) {
 
 <article class="projet wrap projet--inverse" id="territoires" data-fil="g" data-fil-y="0.1">
   <div style="display:grid;gap:1rem;align-content:start">
-    ${visuel('onde', '', { cls: 'ratio-43', alt: 'Visuel animé : cinq lignes de voix' })}
+    ${photo('onde-territoires-audio', '(min-width: 960px) 45vw, 100vw', 'ratio-43')}
     <div class="extrait"><button class="extrait__btn" type="button" disabled aria-label="Capsule sonore à fournir"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg></button><div><canvas aria-hidden="true"></canvas><p class="meta">Cinq portraits sensibles, 9 min 55. Fichier MP3 ${ac('à fournir')}</p></div></div>
   </div>
   <div class="projet__texte">
@@ -872,7 +881,7 @@ function pageLabo(cle) {
 </article>
 
 <article class="projet wrap" id="le-repas" data-fil="d" data-fil-y="0.1">
-  <div>${visuel('repas', '', { cls: 'ratio-43', alt: 'Visuel provisoire : une table dressée vue de dessus' })}<p class="legende">(Photos de la restitution ${ac('à fournir')})</p></div>
+  <div>${photo('repas-novarina-table', '(min-width: 960px) 45vw, 100vw', 'ratio-43')}<p class="legende">(Photos de la restitution ${ac('à fournir')})</p></div>
   <div class="projet__texte">
     <h2 data-perche="g">Le Repas, de Valère Novarina</h2>
     <p class="meta">Abbaye de Noirlac · festival Les Futurs de l’Écrit</p>
