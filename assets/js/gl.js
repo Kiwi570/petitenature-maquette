@@ -86,10 +86,10 @@ function demarrer(fig) {
   const lancer = () => {
     let renderer;
     try {
-      renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, persiste ? 1.75 : 1.5), alpha: false, antialias: false, powerPreference: persiste ? 'high-performance' : 'low-power' });
-    } catch (e) { liberer(); return; }
+      renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, persiste ? 1.75 : 1.25), alpha: false, antialias: false, powerPreference: persiste ? 'high-performance' : 'low-power' });
+    } catch (e) { fig.classList.add('insole--faite'); liberer(); return; }
     const gl = renderer.gl;
-    if (!gl) { liberer(); return; }
+    if (!gl) { fig.classList.add('insole--faite'); liberer(); return; }
     const canvas = gl.canvas;
     canvas.className = 'gl';
     canvas.setAttribute('aria-hidden', 'true');
@@ -124,6 +124,7 @@ function demarrer(fig) {
     };
 
     const fin = () => {
+      fig.classList.add('insole--faite');
       if (persiste) {
         fig.addEventListener('pointermove', (e) => {
           const r = fig.getBoundingClientRect();
@@ -160,11 +161,14 @@ function demarrer(fig) {
 }
 
 function init() {
+  window.PN_GL = true;
   if (calme) return;
   const test = document.createElement('canvas');
-  if (!(test.getContext('webgl2') || test.getContext('webgl'))) return;
+  const ctx = test.getContext('webgl2') || test.getContext('webgl');
   const figs = Array.from(document.querySelectorAll('.insole'));
-  if (!figs.length || !('IntersectionObserver' in window)) return;
+  if (!ctx || !figs.length || !('IntersectionObserver' in window)) { H.classList.remove('gl'); return; }
+  const perte = ctx.getExtension('WEBGL_lose_context');
+  if (perte) perte.loseContext();
   const io = new IntersectionObserver((entrees) => {
     entrees.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); demarrer(e.target); } });
   }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });

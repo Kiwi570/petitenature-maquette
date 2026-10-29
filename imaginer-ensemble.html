@@ -23,9 +23,9 @@
 <link rel="icon" type="image/webp" href="assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261029">
+<link rel="stylesheet" href="assets/css/site.css">
 
-<script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
 </head>
 <body data-racine="">
 <a class="passer" href="#contenu">Aller au contenu</a>
@@ -76,7 +76,7 @@
 
 <article class="projet wrap projet--inverse" id="territoires" data-fil="g" data-fil-y="0.1">
   <div style="display:grid;gap:1rem;align-content:start">
-    <figure class="visuel ratio-43"><img src="assets/img/grok/onde-territoires-audio-784.webp" srcset="assets/img/grok/onde-territoires-audio-480.webp 480w, assets/img/grok/onde-territoires-audio-784.webp 784w, assets/img/grok/onde-territoires-audio-1045.webp 1045w" sizes="(min-width: 960px) 45vw, 100vw" width="1045" height="784" alt="Un enregistreur audio et un casque posés sur un rebord de fenêtre en bois, à côté d’un carnet ouvert et d’un crayon rouge" loading="lazy" decoding="async"></figure>
+    <figure class="visuel ratio-43"><canvas data-scene="onde" role="img" aria-label="Visuel animé : cinq lignes de voix"></canvas><span class="provisoire">Visuel provisoire</span></figure>
     <div class="extrait"><button class="extrait__btn" type="button" disabled aria-label="Capsule sonore à fournir"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg></button><div><canvas aria-hidden="true"></canvas><p class="meta">Cinq portraits sensibles, 9 min 55. Fichier MP3 <span class="a-completer">à fournir</span></p></div></div>
   </div>
   <div class="projet__texte">
@@ -89,7 +89,7 @@
 </article>
 
 <article class="projet wrap" id="le-repas" data-fil="d" data-fil-y="0.1">
-  <div><figure class="visuel ratio-43"><img src="assets/img/grok/repas-novarina-table-784.webp" srcset="assets/img/grok/repas-novarina-table-480.webp 480w, assets/img/grok/repas-novarina-table-784.webp 784w, assets/img/grok/repas-novarina-table-1045.webp 1045w" sizes="(min-width: 960px) 45vw, 100vw" width="1045" height="784" alt="Une longue table en bois dressée dans une salle en pierre, avec des assiettes, du pain, des serviettes de lin, des feuilles blanches et une serviette rouge" loading="lazy" decoding="async"></figure><p class="legende">(Photos de la restitution <span class="a-completer">à fournir</span>)</p></div>
+  <div><figure class="visuel ratio-43"><canvas data-scene="repas" role="img" aria-label="Visuel provisoire : une table dressée vue de dessus"></canvas><span class="provisoire">Visuel provisoire</span></figure><p class="legende">(Photos de la restitution <span class="a-completer">à fournir</span>)</p></div>
   <div class="projet__texte">
     <h2 data-perche="g">Le Repas, de Valère Novarina</h2>
     <p class="meta">Abbaye de Noirlac · festival Les Futurs de l’Écrit</p>
@@ -163,16 +163,18 @@
   </div>
 </footer>
 </div></div>
-<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
+<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
+<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 
-<script src="assets/data/site.js?v=20261029"></script>
-<script src="assets/data/images.js?v=20261029"></script>
+<script src="assets/data/site.js"></script>
+<script src="assets/data/images.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/ScrollSmoother.min.js"></script>
 <script src="assets/vendor/Flip.min.js"></script>
-<script src="assets/js/app.js?v=20261029"></script>
-<script type="module" src="assets/js/gl.js?v=20261029"></script>
+<script src="assets/js/scenes.js"></script>
+<script src="assets/js/app.js"></script>
+<script type="module" src="assets/js/gl.js"></script>
 
 </body>
 </html>

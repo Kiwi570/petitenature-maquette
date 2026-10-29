@@ -23,9 +23,9 @@
 <link rel="icon" type="image/webp" href="assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261029">
+<link rel="stylesheet" href="assets/css/site.css">
 
-<script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
 </head>
 <body data-racine="">
 <a class="passer" href="#contenu">Aller au contenu</a>
@@ -59,6 +59,15 @@
       <figure class="visuel insole parallaxe"><img src="assets/img/lectures/au-supermarche-960.webp" srcset="assets/img/lectures/au-supermarche-480.webp 480w, assets/img/lectures/au-supermarche-960.webp 960w, assets/img/lectures/au-supermarche-1536.webp 1536w" sizes="(min-width: 960px) 55vw, 60vw" width="1536" height="1024" alt="Lecture à voix haute au rayon lessives d’un supermarché devant un public assis" fetchpriority="high" decoding="async" style="background-color:#766564"></figure>
       <figure class="visuel insole parallaxe"><img src="assets/img/lectures/au-musee-960.webp" srcset="assets/img/lectures/au-musee-480.webp 480w, assets/img/lectures/au-musee-960.webp 960w, assets/img/lectures/au-musee-1600.webp 1600w, assets/img/lectures/au-musee-2400.webp 2400w" sizes="40vw" width="4284" height="5712" alt="Une lectrice lit devant une œuvre dans une salle de musée" loading="lazy" decoding="async" style="background-color:#877d6f"></figure>
       <figure class="visuel visuel--cadre"><img src="assets/img/lectures/au-bord-de-leau-barque-576.webp" srcset="assets/img/lectures/au-bord-de-leau-barque-480.webp 480w, assets/img/lectures/au-bord-de-leau-barque-576.webp 576w" sizes="30vw" width="576" height="1280" alt="Une lectrice lit à voix haute dans une barque sur l'eau" loading="lazy" decoding="async" style="background-color:#89898c"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="section nuit" data-fil="g" data-fil-y="0.3">
+  <div class="wrap">
+    <div class="tapuscrit"><p class="marge dida">(Trois manières de faire.)</p><h2 class="corps titre titre--moyen" data-perche="g">En tournée, en immersion, sur mesure</h2></div>
+    <div class="projets" style="margin-top:2.5rem">
+      <div class="projet-carte"><figure class="visuel ratio-43 insole"><picture><img src="assets/img/grok/lectures-chapitre-tournee-1168.webp" srcset="assets/img/grok/lectures-chapitre-tournee-480.webp 480w, assets/img/grok/lectures-chapitre-tournee-960.webp 960w, assets/img/grok/lectures-chapitre-tournee-1168.webp 1168w" sizes="(min-width: 960px) 30vw, 100vw" alt="Un sac de livres sur une banquette de train, des champs et des peupliers derrière la vitre" loading="lazy" decoding="async"></picture></figure><h3 class="neon neon--petit neon--nuit neon--soleil">En tournée</h3><p style="color:#d6cabb">Des lectures et des cycles littéraires prêts à être programmés.</p><a class="lien-fleche" href="#en-tournee" data-filtre-lien="en-tournee" style="justify-self:start">Voir ces lectures</a></div><div class="projet-carte"><figure class="visuel ratio-43 insole"><picture><img src="assets/img/grok/lectures-chapitre-immersion-1168.webp" srcset="assets/img/grok/lectures-chapitre-immersion-480.webp 480w, assets/img/grok/lectures-chapitre-immersion-960.webp 960w, assets/img/grok/lectures-chapitre-immersion-1168.webp 1168w" sizes="(min-width: 960px) 30vw, 100vw" alt="Des cyanotypes de fougères qui sèchent sur un fil, au bord d’une rivière" loading="lazy" decoding="async"></picture></figure><h3 class="neon neon--petit neon--nuit neon--bleu">En immersion</h3><p style="color:#d6cabb">Une expérience avant ou pendant la lecture pour enrichir l’écoute.</p><a class="lien-fleche" href="#en-immersion" data-filtre-lien="en-immersion" style="justify-self:start">Voir ces lectures</a></div><div class="projet-carte"><figure class="visuel ratio-43 insole"><picture><img src="assets/img/grok/lectures-chapitre-sur-mesure-1168.webp" srcset="assets/img/grok/lectures-chapitre-sur-mesure-480.webp 480w, assets/img/grok/lectures-chapitre-sur-mesure-960.webp 960w, assets/img/grok/lectures-chapitre-sur-mesure-1168.webp 1168w" sizes="(min-width: 960px) 30vw, 100vw" alt="Un pupitre et un livre ouvert au bout d’un rayon de supermarché vide" loading="lazy" decoding="async"></picture></figure><h3 class="neon neon--petit neon--nuit ">Sur mesure</h3><p style="color:#d6cabb">Des lectures conçues autour d’un thème, d’un lieu ou d’un projet.</p><a class="lien-fleche" href="#sur-mesure" data-filtre-lien="sur-mesure" style="justify-self:start">Voir ces lectures</a></div>
     </div>
   </div>
 </section>
@@ -134,15 +143,6 @@
   </div>
 </section>
 
-<section class="section nuit" data-fil="g" data-fil-y="0.3">
-  <div class="wrap">
-    <div class="tapuscrit"><p class="marge dida">(Trois manières de faire.)</p><h2 class="corps titre titre--moyen" data-perche="g">En tournée, en immersion, sur mesure</h2></div>
-    <div class="projets" style="margin-top:2.5rem">
-      <div class="projet-carte"><figure class="visuel ratio-43 insole"><picture><img src="assets/img/grok/lectures-chapitre-tournee-1168.webp" srcset="assets/img/grok/lectures-chapitre-tournee-480.webp 480w, assets/img/grok/lectures-chapitre-tournee-960.webp 960w, assets/img/grok/lectures-chapitre-tournee-1168.webp 1168w" sizes="(min-width: 960px) 30vw, 100vw" alt="Un sac de livres sur une banquette de train, des champs et des peupliers derrière la vitre" loading="lazy" decoding="async"></picture></figure><h3 class="neon neon--petit neon--nuit neon--soleil">En tournée</h3><p style="color:#d6cabb">Des lectures et des cycles littéraires prêts à être programmés.</p><a class="lien-fleche" href="#en-tournee" data-filtre-lien="en-tournee" style="justify-self:start">Voir ces lectures</a></div><div class="projet-carte"><figure class="visuel ratio-43 insole"><picture><img src="assets/img/grok/lectures-chapitre-immersion-1168.webp" srcset="assets/img/grok/lectures-chapitre-immersion-480.webp 480w, assets/img/grok/lectures-chapitre-immersion-960.webp 960w, assets/img/grok/lectures-chapitre-immersion-1168.webp 1168w" sizes="(min-width: 960px) 30vw, 100vw" alt="Des cyanotypes de fougères qui sèchent sur un fil, au bord d’une rivière" loading="lazy" decoding="async"></picture></figure><h3 class="neon neon--petit neon--nuit neon--bleu">En immersion</h3><p style="color:#d6cabb">Une expérience avant ou pendant la lecture pour enrichir l’écoute.</p><a class="lien-fleche" href="#en-immersion" data-filtre-lien="en-immersion" style="justify-self:start">Voir ces lectures</a></div><div class="projet-carte"><figure class="visuel ratio-43 insole"><picture><img src="assets/img/grok/lectures-chapitre-sur-mesure-1168.webp" srcset="assets/img/grok/lectures-chapitre-sur-mesure-480.webp 480w, assets/img/grok/lectures-chapitre-sur-mesure-960.webp 960w, assets/img/grok/lectures-chapitre-sur-mesure-1168.webp 1168w" sizes="(min-width: 960px) 30vw, 100vw" alt="Un pupitre et un livre ouvert au bout d’un rayon de supermarché vide" loading="lazy" decoding="async"></picture></figure><h3 class="neon neon--petit neon--nuit ">Sur mesure</h3><p style="color:#d6cabb">Des lectures conçues autour d’un thème, d’un lieu ou d’un projet.</p><a class="lien-fleche" href="#sur-mesure" data-filtre-lien="sur-mesure" style="justify-self:start">Voir ces lectures</a></div>
-    </div>
-  </div>
-</section>
-
 <section class="section nuit" data-fil="c" data-fil-y="0.2">
   <div class="wrap appel">
     <div style="display:grid;gap:1.4rem">
@@ -202,16 +202,18 @@
   </div>
 </footer>
 </div></div>
-<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
+<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
+<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 
-<script src="assets/data/site.js?v=20261029"></script>
-<script src="assets/data/images.js?v=20261029"></script>
+<script src="assets/data/site.js"></script>
+<script src="assets/data/images.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/ScrollSmoother.min.js"></script>
 <script src="assets/vendor/Flip.min.js"></script>
-<script src="assets/js/app.js?v=20261029"></script>
-<script type="module" src="assets/js/gl.js?v=20261029"></script>
+<script src="assets/js/scenes.js"></script>
+<script src="assets/js/app.js"></script>
+<script type="module" src="assets/js/gl.js"></script>
 
 </body>
 </html>

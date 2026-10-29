@@ -23,9 +23,9 @@
 <link rel="icon" type="image/webp" href="assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261029">
+<link rel="stylesheet" href="assets/css/site.css">
 
-<script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
 </head>
 <body data-racine="">
 <a class="passer" href="#contenu">Aller au contenu</a>
@@ -108,7 +108,7 @@
       <figure class="visuel ratio-43 parallaxe insole" data-pos="50% 70%"><picture><img src="assets/img/grok/labos-imaginer-1168.webp" srcset="assets/img/grok/labos-imaginer-480.webp 480w, assets/img/grok/labos-imaginer-960.webp 960w, assets/img/grok/labos-imaginer-1168.webp 1168w" sizes="(min-width: 960px) 40vw, 100vw" alt="Un casque et un enregistreur posés sur de la mousse et des plantes sèches" loading="lazy" decoding="async" style="object-position:50% 70%"></picture></figure>
     </div>
     <div class="projets">
-      <a class="projet-carte" href="imaginer-ensemble.html#sauvage" data-tilt data-curseur="Voir"><figure class="visuel"><img src="assets/img/labos/paysans-paysages-sauvage-vegetaux-960.webp" srcset="assets/img/labos/paysans-paysages-sauvage-vegetaux-480.webp 480w, assets/img/labos/paysans-paysages-sauvage-vegetaux-960.webp 960w, assets/img/labos/paysans-paysages-sauvage-vegetaux-1600.webp 1600w, assets/img/labos/paysans-paysages-sauvage-vegetaux-2400.webp 2400w" sizes="(min-width: 960px) 30vw, 100vw" width="4000" height="3000" alt="Des mains manipulent des végétaux cueillis" loading="lazy" decoding="async" style="background-color:#96958c"></figure><h3>Paysans Paysages « sauvage »</h3><p>Résidents d’EHPAD et hôpital de jour</p><span class="restitution">Restitution</span></a><a class="projet-carte" href="imaginer-ensemble.html#territoires" data-tilt data-curseur="Voir"><figure class="visuel"><img src="assets/img/grok/onde-territoires-audio-784.webp" srcset="assets/img/grok/onde-territoires-audio-480.webp 480w, assets/img/grok/onde-territoires-audio-784.webp 784w, assets/img/grok/onde-territoires-audio-1045.webp 1045w" sizes="(min-width: 960px) 30vw, 100vw" width="1045" height="784" alt="Un enregistreur audio et un casque posés sur un rebord de fenêtre en bois, à côté d’un carnet ouvert et d’un crayon rouge" loading="lazy" decoding="async"></figure><h3>Territoires, portraits sensibles</h3><p>Foyer de vie, Courville-sur-Eure</p><span class="restitution">Capsule sonore à écouter</span></a><a class="projet-carte" href="imaginer-ensemble.html#le-repas" data-tilt data-curseur="Voir"><figure class="visuel"><img src="assets/img/grok/repas-novarina-table-784.webp" srcset="assets/img/grok/repas-novarina-table-480.webp 480w, assets/img/grok/repas-novarina-table-784.webp 784w, assets/img/grok/repas-novarina-table-1045.webp 1045w" sizes="(min-width: 960px) 30vw, 100vw" width="1045" height="784" alt="Une longue table en bois dressée dans une salle en pierre, avec des assiettes, du pain, des serviettes de lin, des feuilles blanches et une serviette rouge" loading="lazy" decoding="async"></figure><h3>Le Repas, de Valère Novarina</h3><p>CAP cuisine et hôpital, Abbaye de Noirlac</p><span class="restitution">Spectacle</span></a>
+      <a class="projet-carte" href="imaginer-ensemble.html#sauvage" data-tilt data-curseur="Voir"><figure class="visuel"><img src="assets/img/labos/paysans-paysages-sauvage-vegetaux-960.webp" srcset="assets/img/labos/paysans-paysages-sauvage-vegetaux-480.webp 480w, assets/img/labos/paysans-paysages-sauvage-vegetaux-960.webp 960w, assets/img/labos/paysans-paysages-sauvage-vegetaux-1600.webp 1600w, assets/img/labos/paysans-paysages-sauvage-vegetaux-2400.webp 2400w" sizes="(min-width: 960px) 30vw, 100vw" width="4000" height="3000" alt="Des mains manipulent des végétaux cueillis" loading="lazy" decoding="async" style="background-color:#96958c"></figure><h3>Paysans Paysages « sauvage »</h3><p>Résidents d’EHPAD et hôpital de jour</p><span class="restitution">Restitution</span></a><a class="projet-carte" href="imaginer-ensemble.html#territoires" data-tilt data-curseur="Voir"><figure class="visuel"><canvas data-scene="onde" role="img" aria-label="Visuel animé du projet"></canvas><span class="provisoire">Visuel provisoire</span></figure><h3>Territoires, portraits sensibles</h3><p>Foyer de vie, Courville-sur-Eure</p><span class="restitution">Capsule sonore à écouter</span></a><a class="projet-carte" href="imaginer-ensemble.html#le-repas" data-tilt data-curseur="Voir"><figure class="visuel"><canvas data-scene="repas" role="img" aria-label="Visuel animé du projet"></canvas><span class="provisoire">Visuel provisoire</span></figure><h3>Le Repas, de Valère Novarina</h3><p>CAP cuisine et hôpital, Abbaye de Noirlac</p><span class="restitution">Spectacle</span></a>
     </div>
     <p><a class="lien-fleche" href="imaginer-ensemble.html">Tous les projets « Imaginer ensemble »</a></p>
   </div>
@@ -173,16 +173,18 @@
   </div>
 </footer>
 </div></div>
-<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
+<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
+<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 
-<script src="assets/data/site.js?v=20261029"></script>
-<script src="assets/data/images.js?v=20261029"></script>
+<script src="assets/data/site.js"></script>
+<script src="assets/data/images.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/ScrollSmoother.min.js"></script>
 <script src="assets/vendor/Flip.min.js"></script>
-<script src="assets/js/app.js?v=20261029"></script>
-<script type="module" src="assets/js/gl.js?v=20261029"></script>
+<script src="assets/js/scenes.js"></script>
+<script src="assets/js/app.js"></script>
+<script type="module" src="assets/js/gl.js"></script>
 
 </body>
 </html>

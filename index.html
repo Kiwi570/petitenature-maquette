@@ -23,11 +23,11 @@
 <link rel="icon" type="image/webp" href="assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261029">
+<link rel="stylesheet" href="assets/css/site.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"PerformingGroup","name":"Compagnie Petite Nature","url":"https://petitenature-maquette.vercel.app/","logo":"https://petitenature-maquette.vercel.app/assets/img/identite/logo-960.webp","foundingDate":"2007","email":"compagnie@petitenature.fr","telephone":["+33 6 88 31 81 24","+33 6 46 31 45 47"],"address":{"@type":"PostalAddress","postalCode":"28220","addressLocality":"Cloyes-les-Trois-Rivières","addressCountry":"FR"},"sameAs":["https://www.instagram.com/ciepetitenature","https://www.facebook.com/CiePetiteNature/"],"description":"Lectures à voix haute et labos littéraires."},{"@type":"Event","name":"Histoires d’Ados (lecture à voix haute)","startDate":"2026-11-24T14:00:00+01:00","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Lycée professionnel de Lucé","address":"7 rue Jules Ferry, 28110 Lucé"},"performer":{"@type":"PerformingGroup","name":"Compagnie Petite Nature"},"organizer":{"@type":"PerformingGroup","name":"Compagnie Petite Nature"}}]}</script>
-<script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
 </head>
-<body data-racine="">
+<body data-racine="" class="accueil">
 <a class="passer" href="#contenu">Aller au contenu</a>
 <header class="entete">
   <div class="wrap entete__in">
@@ -260,16 +260,18 @@
   </div>
 </footer>
 </div></div>
-<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
+<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
+<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><clipPath id="onde-clip" clipPathUnits="objectBoundingBox"><path d="M0,1 L0,0.0936 L0.025,0.0804 L0.050,0.0755 L0.075,0.0697 L0.100,0.0634 L0.125,0.0570 L0.150,0.0510 L0.175,0.0459 L0.200,0.0421 L0.225,0.0399 L0.250,0.0397 L0.275,0.0415 L0.300,0.0453 L0.325,0.0510 L0.350,0.0581 L0.375,0.0662 L0.400,0.0747 L0.425,0.0831 L0.450,0.0908 L0.475,0.0972 L0.500,0.1019 L0.525,0.1044 L0.550,0.1047 L0.575,0.1028 L0.600,0.0987 L0.625,0.0929 L0.650,0.0858 L0.675,0.0778 L0.700,0.0696 L0.725,0.0618 L0.750,0.0548 L0.775,0.0491 L0.800,0.0451 L0.825,0.0430 L0.850,0.0427 L0.875,0.0442 L0.900,0.0472 L0.925,0.0515 L0.950,0.0566 L0.975,0.0621 L1.000,0.0676 L1,1 Z"/></clipPath></svg>
-<script src="assets/data/site.js?v=20261029"></script>
-<script src="assets/data/images.js?v=20261029"></script>
+<script src="assets/data/site.js"></script>
+<script src="assets/data/images.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/ScrollSmoother.min.js"></script>
 <script src="assets/vendor/Flip.min.js"></script>
-<script src="assets/js/app.js?v=20261029"></script>
-<script type="module" src="assets/js/gl.js?v=20261029"></script>
+<script src="assets/js/scenes.js"></script>
+<script src="assets/js/app.js"></script>
+<script type="module" src="assets/js/gl.js"></script>
 
 </body>
 </html>

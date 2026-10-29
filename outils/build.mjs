@@ -58,16 +58,6 @@ function visuel(scene, grok, o = {}) {
   return `<figure class="${cls}"${o.style ? ` style="${o.style}"` : ''}><canvas data-scene="${scene}" role="img" aria-label="${esc(o.alt || 'Visuel provisoire')}"></canvas><span class="provisoire">Visuel provisoire</span></figure>`;
 }
 
-/* Photo Grok 4:3 recadrée (480, 784, 1045), sans parallaxe ni insolation. */
-const PHOTOS = {
-  'onde-territoires-audio': 'Un enregistreur audio et un casque posés sur un rebord de fenêtre en bois, à côté d’un carnet ouvert et d’un crayon rouge',
-  'repas-novarina-table': 'Une longue table en bois dressée dans une salle en pierre, avec des assiettes, du pain, des serviettes de lin, des feuilles blanches et une serviette rouge'
-};
-function photo(cle, sizes, cls = '') {
-  const b = `${R}assets/img/grok/${cle}`;
-  return `<figure class="visuel${cls ? ' ' + cls : ''}"><img src="${b}-784.webp" srcset="${b}-480.webp 480w, ${b}-784.webp 784w, ${b}-1045.webp 1045w" sizes="${sizes}" width="1045" height="784" alt="${esc(PHOTOS[cle])}" loading="lazy" decoding="async"></figure>`;
-}
-
 function neon(texte, o = {}) {
   const tag = o.tag || 'h2';
   const cls = ['neon', o.cls].filter(Boolean).join(' ');
@@ -138,11 +128,11 @@ function page({ fichier, titre, description, corps, actif = '', classe = '', ond
 <link rel="icon" type="image/webp" href="${R}assets/img/identite/rouge-gorge-480.webp">
 <link rel="preload" href="${R}assets/fonts/literata-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${R}assets/fonts/tilt-neon-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${R}assets/css/site.css?v=20261029">
+<link rel="stylesheet" href="${R}assets/css/site.css">
 ${fichier === 'index.html' || fichier === 'agenda.html' ? jsonld(fichier) : ''}
-<script>(function(){var h=document.documentElement,r=false;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;var c=localStorage.getItem('pn-calme');if(c==='1'||(c===null&&r))h.classList.add('calme');}catch(e){if(r)h.classList.add('calme');}})();</script>
+<script>(function(){var h=document.documentElement,r=false,c=null;h.classList.remove('sans-js');try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;c=localStorage.getItem('pn-calme');}catch(e){}if(c==='1'||(c===null&&r)){h.classList.add('calme');return;}h.classList.add('js-entree');if(window.WebGLRenderingContext)h.classList.add('gl');try{var t=+sessionStorage.getItem('pn-tourne');if(t&&Date.now()-t<9000){var m=(sessionStorage.getItem('pn-tourne-mot')||'').slice(0,48);h.classList.add('js-arrivee');if(m.length>16)h.classList.add('js-arrivee-long');h.style.setProperty('--feuillet-mot',JSON.stringify(m));}}catch(e){}})();</script>
 </head>
-<body data-racine="${R}"${classe ? ` class="${classe}"` : ''}>
+<body data-racine="${R}"${classe || onde ? ` class="${[classe, onde ? 'accueil' : ''].filter(Boolean).join(' ')}"` : ''}>
 <a class="passer" href="#contenu">Aller au contenu</a>
 <header class="entete">
   <div class="wrap entete__in">
@@ -167,16 +157,18 @@ ${contenu}
 </main>
 ${pied()}
 </div></div>
-<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen"></span></div></div>
+<div class="feuillet" aria-hidden="true"><div class="feuillet__page"><span class="neon neon--moyen feuillet__mot"></span></div><div class="feuillet__bord"></div></div>
+<svg class="sr" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cyano" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.2616 0.5136 0.0998 0 0.055  0.2392 0.4696 0.0912 0 0.15  0.1749 0.3434 0.0667 0 0.40  0 0 0 1 0"/></filter></svg>
 ${onde ? `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><clipPath id="onde-clip" clipPathUnits="objectBoundingBox"><path d="${ondeChemin(0.07, 0.035, 2.4)}"/></clipPath></svg>` : ''}
-<script src="${R}assets/data/site.js?v=20261029"></script>
-<script src="${R}assets/data/images.js?v=20261029"></script>
+<script src="${R}assets/data/site.js"></script>
+<script src="${R}assets/data/images.js"></script>
 <script src="${R}assets/vendor/gsap.min.js"></script>
 <script src="${R}assets/vendor/ScrollTrigger.min.js"></script>
 <script src="${R}assets/vendor/ScrollSmoother.min.js"></script>
 <script src="${R}assets/vendor/Flip.min.js"></script>
-<script src="${R}assets/js/app.js?v=20261029"></script>
-<script type="module" src="${R}assets/js/gl.js?v=20261029"></script>
+<script src="${R}assets/js/scenes.js"></script>
+<script src="${R}assets/js/app.js"></script>
+<script type="module" src="${R}assets/js/gl.js"></script>
 ${scripts}
 </body>
 </html>
@@ -252,7 +244,7 @@ function pied() {
 }
 
 /* ---------------------------------------------------------------- blocs communs */
-function blocProchaine(titreTag = 'h2') {
+function blocProchaine(titreTag = 'h2', surAgenda = false) {
   const e = prochain;
   const d = e ? debut(e) : null;
   const lien = e ? (e.lecture ? `${R}lectures/${e.lecture}.html` : e.labo ? `${R}${e.labo}.html` : `${R}agenda.html`) : `${R}agenda.html`;
@@ -268,7 +260,7 @@ function blocProchaine(titreTag = 'h2') {
       <div class="decompte" data-decompte aria-label="Temps restant avant la lecture">
         <div><b data-j>–</b><span>jours</span></div><div><b data-h>–</b><span>heures</span></div><div><b data-m>–</b><span>minutes</span></div><div><b data-s>–</b><span>secondes</span></div>
       </div>
-      <div class="actions"><button class="btn" type="button" data-p-ics>Ajouter à mon agenda</button><a class="lien-fleche" href="${R}agenda.html">Tout l’agenda</a></div>
+      <div class="actions"><button class="btn" type="button" data-p-ics>Ajouter à mon agenda</button>${surAgenda ? '<a class="lien-fleche" href="#rendez-vous">Toutes les dates</a>' : `<a class="lien-fleche" href="${R}agenda.html">Tout l’agenda</a>`}</div>
     </div>
     ${image('agenda/visuel-prix-histoires-dados', { cls: 'ratio-45', alt: "Visuel du prix Histoires d'ados", sizes: '220px' })}
   </div>
@@ -569,6 +561,15 @@ function lectures() {
   </div>
 </section>
 
+<section class="section nuit" data-fil="g" data-fil-y="0.3">
+  <div class="wrap">
+    <div class="tapuscrit"><p class="marge dida">(Trois manières de faire.)</p><h2 class="corps titre titre--moyen" data-perche="g">En tournée, en immersion, sur mesure</h2></div>
+    <div class="projets" style="margin-top:2.5rem">
+      ${[['en-tournee', 'neon--soleil', 'lectures/paysans-paysages-plein-air', 'lectures-chapitre-tournee', 'Un sac de livres sur une banquette de train, des champs et des peupliers derrière la vitre'], ['en-immersion', 'neon--bleu', 'lectures/observer-le-vivant-cyanotype', 'lectures-chapitre-immersion', 'Des cyanotypes de fougères qui sèchent sur un fil, au bord d’une rivière'], ['sur-mesure', '', 'lectures/dans-une-gare', 'lectures-chapitre-sur-mesure', 'Un pupitre et un livre ouvert au bout d’un rayon de supermarché vide']].map(([k, c, im, gk, alt]) => `<div class="projet-carte">${GROK.has(gk) ? visuel('', gk, { cls: 'ratio-43', sizes: '(min-width: 960px) 30vw, 100vw', alt }) : image(im, { sizes: '(min-width: 960px) 30vw, 100vw' })}${neon(PN.categories[k].nom, { tag: 'h3', cls: 'neon--petit neon--nuit ' + c })}<p style="color:#d6cabb">${PN.categories[k].texte}</p><a class="lien-fleche" href="#${k}" data-filtre-lien="${k}" style="justify-self:start">Voir ces lectures</a></div>`).join('')}
+    </div>
+  </div>
+</section>
+
 <section class="section" data-catalogue data-fil="d" data-fil-y="0.05">
   <div class="wrap">
     <div class="tapuscrit">
@@ -588,15 +589,6 @@ function lectures() {
         <span class="carte-lecture__tube"></span>
         <span class="carte-lecture__in"><span class="etiquette">${PN.categories[l.cat].nom}</span><h3>${esc(l.titre)}</h3><p>${esc(l.accroche)}</p>${une ? `<span class="carte-lecture__date">Prochaine date : ${fCourt.format(debut(prochain))}, ${esc(ville(prochain.adresse))}</span>` : ''}</span>
       </a>`; }).join('')}
-    </div>
-  </div>
-</section>
-
-<section class="section nuit" data-fil="g" data-fil-y="0.3">
-  <div class="wrap">
-    <div class="tapuscrit"><p class="marge dida">(Trois manières de faire.)</p><h2 class="corps titre titre--moyen" data-perche="g">En tournée, en immersion, sur mesure</h2></div>
-    <div class="projets" style="margin-top:2.5rem">
-      ${[['en-tournee', 'neon--soleil', 'lectures/paysans-paysages-plein-air', 'lectures-chapitre-tournee', 'Un sac de livres sur une banquette de train, des champs et des peupliers derrière la vitre'], ['en-immersion', 'neon--bleu', 'lectures/observer-le-vivant-cyanotype', 'lectures-chapitre-immersion', 'Des cyanotypes de fougères qui sèchent sur un fil, au bord d’une rivière'], ['sur-mesure', '', 'lectures/dans-une-gare', 'lectures-chapitre-sur-mesure', 'Un pupitre et un livre ouvert au bout d’un rayon de supermarché vide']].map(([k, c, im, gk, alt]) => `<div class="projet-carte">${GROK.has(gk) ? visuel('', gk, { cls: 'ratio-43', sizes: '(min-width: 960px) 30vw, 100vw', alt }) : image(im, { sizes: '(min-width: 960px) 30vw, 100vw' })}${neon(PN.categories[k].nom, { tag: 'h3', cls: 'neon--petit neon--nuit ' + c })}<p style="color:#d6cabb">${PN.categories[k].texte}</p><a class="lien-fleche" href="#${k}" data-filtre-lien="${k}" style="justify-self:start">Voir ces lectures</a></div>`).join('')}
     </div>
   </div>
 </section>
@@ -696,8 +688,8 @@ const LABOS = {
     img: 'labos/paysans-paysages-sauvage-vegetaux',
     projets: [
       { id: 'sauvage', titre: 'Paysans Paysages « sauvage »', ou: 'Résidents d’EHPAD et hôpital de jour', resti: 'Restitution', img: 'labos/paysans-paysages-sauvage-vegetaux' },
-      { id: 'territoires', titre: 'Territoires, portraits sensibles', ou: 'Foyer de vie, Courville-sur-Eure', resti: 'Capsule sonore à écouter', photo: 'onde-territoires-audio' },
-      { id: 'le-repas', titre: 'Le Repas, de Valère Novarina', ou: 'CAP cuisine et hôpital, Abbaye de Noirlac', resti: 'Spectacle', photo: 'repas-novarina-table' }
+      { id: 'territoires', titre: 'Territoires, portraits sensibles', ou: 'Foyer de vie, Courville-sur-Eure', resti: 'Capsule sonore à écouter', scene: 'onde' },
+      { id: 'le-repas', titre: 'Le Repas, de Valère Novarina', ou: 'CAP cuisine et hôpital, Abbaye de Noirlac', resti: 'Spectacle', scene: 'repas' }
     ]
   }
 };
@@ -745,7 +737,7 @@ ${Object.values(LABOS).map((L, k) => `
       ${L.enteteGrok && GROK.has(L.enteteGrok) ? visuel('', L.enteteGrok, { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw', pos: '50% 70%', alt: 'Un casque et un enregistreur posés sur de la mousse et des plantes sèches' }) : image(L.img, { cls: 'ratio-43 insole parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
     </div>
     <div class="projets">
-      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : p.photo ? photo(p.photo, '(min-width: 960px) 30vw, 100vw') : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
+      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
     </div>
     <p><a class="lien-fleche" href="${R}${L.fichier}">Tous les projets « ${L.titre} »</a></p>
   </div>
@@ -868,7 +860,7 @@ function pageLabo(cle) {
 
 <article class="projet wrap projet--inverse" id="territoires" data-fil="g" data-fil-y="0.1">
   <div style="display:grid;gap:1rem;align-content:start">
-    ${photo('onde-territoires-audio', '(min-width: 960px) 45vw, 100vw', 'ratio-43')}
+    ${visuel('onde', '', { cls: 'ratio-43', alt: 'Visuel animé : cinq lignes de voix' })}
     <div class="extrait"><button class="extrait__btn" type="button" disabled aria-label="Capsule sonore à fournir"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg></button><div><canvas aria-hidden="true"></canvas><p class="meta">Cinq portraits sensibles, 9 min 55. Fichier MP3 ${ac('à fournir')}</p></div></div>
   </div>
   <div class="projet__texte">
@@ -881,7 +873,7 @@ function pageLabo(cle) {
 </article>
 
 <article class="projet wrap" id="le-repas" data-fil="d" data-fil-y="0.1">
-  <div>${photo('repas-novarina-table', '(min-width: 960px) 45vw, 100vw', 'ratio-43')}<p class="legende">(Photos de la restitution ${ac('à fournir')})</p></div>
+  <div>${visuel('repas', '', { cls: 'ratio-43', alt: 'Visuel provisoire : une table dressée vue de dessus' })}<p class="legende">(Photos de la restitution ${ac('à fournir')})</p></div>
   <div class="projet__texte">
     <h2 data-perche="g">Le Repas, de Valère Novarina</h2>
     <p class="meta">Abbaye de Noirlac · festival Les Futurs de l’Écrit</p>
@@ -998,11 +990,11 @@ function agenda() {
 <section class="section" data-fil="d" data-fil-y="0.1">
   <div class="wrap" style="display:grid;gap:2rem">
     <h2 class="titre titre--moyen" data-perche="g">La prochaine date</h2>
-    ${blocProchaine('h3')}
+    ${blocProchaine('h3', true)}
   </div>
 </section>
 
-<section class="section section--serree" data-agenda data-fil="g" data-fil-y="0.05">
+<section class="section section--serree" id="rendez-vous" data-agenda data-fil="g" data-fil-y="0.05">
   <div class="wrap tapuscrit">
     <div class="marge" style="display:grid;gap:1rem;align-content:start">
       <p class="dida">(Filtrer par type de rendez-vous.)</p>
@@ -1117,7 +1109,7 @@ function programmer() {
 function contact() {
   const c = PN.compagnie;
   return page({
-    fichier: 'contact.html', actif: 'contact',
+    fichier: 'contact.html', actif: 'contact', classe: 'page-contact',
     titre: 'Contact, Petite Nature',
     description: 'Programmer une lecture à voix haute ou échanger autour d’un projet littéraire : contactez la Compagnie Petite Nature.',
     corps: () => `
