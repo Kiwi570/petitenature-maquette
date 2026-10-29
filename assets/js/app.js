@@ -1191,12 +1191,13 @@
     var titre = $('.hero .neon');
     if (!anime) { if (titre) allumer(titre); return true; }
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: retardEntree });
-    if (entete) tl.from(entete, { y: -30, autoAlpha: 0, duration: 0.6 }, 0);
+    /* valeurs d'arrivée écrites en toutes lettres : l'état de départ vient de la feuille de style */
+    if (entete) tl.fromTo(entete, { y: -30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, clearProps: 'transform,opacity,visibility' }, 0);
     if (titre) tl.call(function () { allumer(titre); }, null, 0.15);
     if (robin) tl.call(function () { robin.arrivee(0); }, null, 0.5);
     var chapeau = $('.hero .chapeau');
-    if (chapeau) { var mots = decouperMots(chapeau, 'mot-c'); tl.from(mots, { autoAlpha: 0, y: 10, duration: 0.5, stagger: 0.025 }, 0.55); }
-    tl.from($$('.hero .actions > *, .hero .prochaine-pastille'), { autoAlpha: 0, y: 12, duration: 0.5, stagger: 0.08 }, 0.9);
+    if (chapeau) { var mots = decouperMots(chapeau, 'mot-c'); tl.fromTo(mots, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.025 }, 0.55); }
+    tl.fromTo($$('.hero .actions > *, .hero .prochaine-pastille'), { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, clearProps: 'transform,opacity,visibility' }, 0.9);
     if (onde) {
       var o = { b: 1, a: 0.06, p: 0 };
       dessinerOnde(o.b, o.a, o.p);
