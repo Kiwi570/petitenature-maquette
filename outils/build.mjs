@@ -688,8 +688,8 @@ const LABOS = {
     img: 'labos/paysans-paysages-sauvage-vegetaux',
     projets: [
       { id: 'sauvage', titre: 'Paysans Paysages « sauvage »', ou: 'Résidents d’EHPAD et hôpital de jour', resti: 'Restitution', img: 'labos/paysans-paysages-sauvage-vegetaux' },
-      { id: 'territoires', titre: 'Territoires, portraits sensibles', ou: 'Foyer de vie, Courville-sur-Eure', resti: 'Capsule sonore à écouter', scene: 'onde' },
-      { id: 'le-repas', titre: 'Le Repas, de Valère Novarina', ou: 'CAP cuisine et hôpital, Abbaye de Noirlac', resti: 'Spectacle', scene: 'repas' }
+      { id: 'territoires', titre: 'Territoires, portraits sensibles', ou: 'Foyer de vie, Courville-sur-Eure', resti: 'Capsule sonore à écouter', scene: 'onde', grok: 'onde-territoires-audio', alt: 'Un enregistreur audio et un casque posés sur un rebord de fenêtre en bois, à côté d’un carnet ouvert et d’un crayon rouge' },
+      { id: 'le-repas', titre: 'Le Repas, de Valère Novarina', ou: 'CAP cuisine et hôpital, Abbaye de Noirlac', resti: 'Spectacle', scene: 'repas', grok: 'repas-novarina-table', alt: 'Une longue table en bois dressée dans une salle en pierre, avec des assiettes, du pain, des serviettes de lin, des feuilles blanches et une serviette rouge' }
     ]
   }
 };
@@ -737,7 +737,7 @@ ${Object.values(LABOS).map((L, k) => `
       ${L.enteteGrok && GROK.has(L.enteteGrok) ? visuel('', L.enteteGrok, { cls: 'ratio-43 parallaxe', sizes: '(min-width: 960px) 40vw, 100vw', pos: '50% 70%', alt: 'Un casque et un enregistreur posés sur de la mousse et des plantes sèches' }) : image(L.img, { cls: 'ratio-43 insole parallaxe', sizes: '(min-width: 960px) 40vw, 100vw' })}
     </div>
     <div class="projets">
-      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, p.grok || '', { alt: p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet', insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
+      ${L.projets.map((p) => `<a class="projet-carte" href="${R}${L.fichier}#${p.id}" data-tilt data-curseur="Voir">${p.img ? image(p.img, { sizes: '(min-width: 960px) 30vw, 100vw' }) : visuel(p.scene, p.grok || '', { alt: p.alt || (p.grok ? 'Une piste dans une forêt enneigée, un homme et un chien au loin' : 'Visuel animé du projet'), sizes: p.alt ? '(min-width: 960px) 30vw, 100vw' : undefined, insole: false })}<h3>${esc(p.titre)}</h3><p${k === 1 ? ' style="color:#d6cabb"' : ''}>${esc(p.ou)}</p><span class="restitution">${esc(p.resti)}</span></a>`).join('')}
     </div>
     <p><a class="lien-fleche" href="${R}${L.fichier}">Tous les projets « ${L.titre} »</a></p>
   </div>
@@ -860,7 +860,7 @@ function pageLabo(cle) {
 
 <article class="projet wrap projet--inverse" id="territoires" data-fil="g" data-fil-y="0.1">
   <div style="display:grid;gap:1rem;align-content:start">
-    ${visuel('onde', '', { cls: 'ratio-43', alt: 'Visuel animé : cinq lignes de voix' })}
+    ${visuel('onde', 'onde-territoires-audio', { cls: 'ratio-43', insole: false, sizes: '(min-width: 960px) 45vw, 100vw', alt: 'Un enregistreur audio et un casque posés sur un rebord de fenêtre en bois, à côté d’un carnet ouvert et d’un crayon rouge' })}
     <div class="extrait"><button class="extrait__btn" type="button" disabled aria-label="Capsule sonore à fournir"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg></button><div><canvas aria-hidden="true"></canvas><p class="meta">Cinq portraits sensibles, 9 min 55. Fichier MP3 ${ac('à fournir')}</p></div></div>
   </div>
   <div class="projet__texte">
@@ -873,7 +873,7 @@ function pageLabo(cle) {
 </article>
 
 <article class="projet wrap" id="le-repas" data-fil="d" data-fil-y="0.1">
-  <div>${visuel('repas', '', { cls: 'ratio-43', alt: 'Visuel provisoire : une table dressée vue de dessus' })}<p class="legende">(Photos de la restitution ${ac('à fournir')})</p></div>
+  <div>${visuel('repas', 'repas-novarina-table', { cls: 'ratio-43', insole: false, sizes: '(min-width: 960px) 45vw, 100vw', alt: 'Une longue table en bois dressée dans une salle en pierre, avec des assiettes, du pain, des serviettes de lin, des feuilles blanches et une serviette rouge' })}<p class="legende">(Photos de la restitution ${ac('à fournir')})</p></div>
   <div class="projet__texte">
     <h2 data-perche="g">Le Repas, de Valère Novarina</h2>
     <p class="meta">Abbaye de Noirlac · festival Les Futurs de l’Écrit</p>
