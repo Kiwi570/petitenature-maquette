@@ -1195,5 +1195,5 @@ page({ fichier: '404.html', titre: 'Page introuvable, Petite Nature', descriptio
   ${GROK.has('page-404') ? visuel('', 'page-404', { cls: 'ratio-169', sizes: '(min-width: 960px) 60vw, 100vw', alt: 'Une plume posée sur les pages blanches d’un livre ouvert' }) : image('identite/rouge-gorge', { cls: 'visuel--contenu', naturel: true, style: 'background:transparent;width:180px', sizes: '180px' })}
 </div></section>` });
 
-fs.writeFileSync(path.join(SITE, 'vercel.json'), JSON.stringify({ cleanUrls: true, trailingSlash: false }, null, 2) + '\n');
+fs.writeFileSync(path.join(SITE, 'vercel.json'), JSON.stringify({ cleanUrls: true, trailingSlash: false, headers: [{ source: '/(.*)', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }] }, null, 2) + '\n');
 console.log('Pages générées. Prochaine date :', prochain && prochain.titre, prochain && prochain.debut, '— images Grok :', GROK.size);
